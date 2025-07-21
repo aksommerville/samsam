@@ -7,7 +7,7 @@
 
 #define NS_sys_tilesize 16
 #define NS_sys_mapw 20
-#define NS_sys_maph 15
+#define NS_sys_maph 11
 
 #define CMD_map_image     0x20 /* u16:imageid */
 #define CMD_map_neighbors 0x60 /* u16:left u16:right u16:up u16:down */
