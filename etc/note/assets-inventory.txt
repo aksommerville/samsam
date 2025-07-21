@@ -1,0 +1,69 @@
+Inventory of assets:
+ - 2-Equipment
+ - - Mattock
+ - - Shield
+ - - Sword
+ - - Shotgun
+ - - Bomb
+ - - Bow
+ - - Arrow (combine with Bow)
+ - - 3-pixel black horizontal line
+ - - Tall Ax?
+ - 3-Home
+ - - House
+ - - Bed
+ - - Umbrella
+ - - Basketball
+ - - Man
+ - - Door
+ - - Backpack
+ - - Paddle
+ - - Flowerpot
+ - - Tower PC?
+ - - Keyboard Mouse Monitor
+ - - Chair or the letter H
+ - - Small white block with black edges LRB
+ - - Asymmetric table or the letter T
+ - - Cent
+ - - Dollar
+ - 4-Miscellaneous
+ - - Skulll
+ - - Heart
+ - - Tall bottle
+ - - Magnifying Glass
+ - - Stout bottle
+ - - Crown
+ - - Hourglass
+ - - Cup with ears
+ - - Solder blob
+ - - Sheared page of text?
+ - - Man with bondage mask and no legs?
+ - - Milk bottle
+ - - Wide mouth bottle
+ - - Forced-perspective open book?
+ - - Fat horizontal bar with edges TB
+ - - Diagonal left edge for said bar
+ - - Open scroll
+ - 5-Nature
+ - - Weed
+ - - Also weed
+ - - Ball with compressed equator
+ - - Snake climbing a potted Festivus pole
+ - - Cannon dressed up as a ghost
+ - - Lumpy chocolate chip cookie
+ - - Dying potted plant
+ - - Log
+ - - Sun
+ - - Moon
+ - - Pine tree
+ - - Earth
+ 
+Transparent, #0e0e0e, #f9f6c7
+Also #000000 only in the shotgun, in 2-Equipment.
+
+These images evidently expect to be recolored. Alas Egg 1 doesn't have a coloring blit, so all we can do is full tint.
+How about Atari-style single-color sprites?
+
+We could compose sprites from these shapes. It's very cheaty but hey, I think anything else we do will be very shit, and composed full-tint sprites might only be mostly shit.
+
+

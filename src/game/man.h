@@ -1,0 +1,26 @@
+/* man.h
+ * Coordinates rendering a man from the one provided frame, with articulable arms and legs.
+ */
+ 
+#ifndef MAN_H
+#define MAN_H
+
+#define MAN_ARM_DOWN 0
+#define MAN_ARM_SIDE 1
+#define MAN_ARM_UP   2
+
+#define MAN_WALK_SPEED 100.0
+
+struct man {
+  double x,y; // Position in world space.
+  double lleg,rleg; // 0..1 = down..up.
+  int larm,rarm; // MAN_ARM_*
+  int walking; // If nonzero, we animate legs at update. Otherwise, we slide them back to zero.
+  double dlleg,drleg; // Relevant while walking.
+  int carry_item; // Zero or decalid. Rendered position depends on arms.
+};
+
+void man_update(struct man *man,double elapsed);
+void man_render(struct man *man);
+
+#endif

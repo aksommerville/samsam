@@ -2,11 +2,14 @@
  * This exists only to be overridden by games' editors.
  */
  
+import { GraphicsSlicer } from "./GraphicsSlicer.js";
+ 
 export class Custom {
   static getDependencies() {
-    return [];
+    return [GraphicsSlicer];
   }
-  constructor() {
+  constructor(graphicsSlicer) {
+    this.graphicsSlicer = graphicsSlicer;
   }
   
   /* Return an array of {
@@ -17,7 +20,9 @@ export class Custom {
    * Return in the order you want them to appear. Custom actions come before standard ones in the menu.
    */
   getActions() {
-    return [];
+    return [
+      { op: "sliceGraphics", label: "Slice Graphics", fn: () => this.graphicsSlicer.sliceGraphics() },
+    ];
   }
   
   /* Array of class implementing:
