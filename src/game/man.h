@@ -31,6 +31,7 @@ void man_render(struct man *man);
 
 /* The source image is horizontally symmetric, so we don't bother with a transform.
  * But when he's holding one thing in the SIDE position, it will always be his leading side.
+ * These also enforce horizontal motion constraints.
  */
 void man_face_left(struct man *man);
 void man_face_right(struct man *man);

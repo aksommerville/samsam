@@ -96,3 +96,12 @@ int load_map(int rid) {
   
   return 0;
 }
+
+/* Reset session.
+ */
+ 
+int reset_session() {
+  memset(g.flagv,0,sizeof(g.flagv));
+  g.flagv[0]=2; // NS_flag_one must always be one.
+  return load_map(RID_map_home);
+}

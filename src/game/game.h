@@ -32,6 +32,7 @@ extern struct g {
   int scrollx;
   double worldw;
   int indoors;
+  uint8_t flagv[32];
 } g;
 
 /* Labels are strictly monospaced. Pad with spaces if you like.
@@ -42,7 +43,11 @@ extern struct g {
 int generate_label(const char *src,int srcc);
 
 int load_map(int mapid);
+int reset_session();
 
 int res_get(void *dstpp,int tid,int rid);
+
+int flag_get(int flagid);
+int flag_set(int flagid,int v); // => nonzero if changed
 
 #endif

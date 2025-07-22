@@ -29,6 +29,10 @@
 #define NS_platform_table 3
 #define NS_platform_chair 4
 
+#define NS_flag_zero 0
+#define NS_flag_one 1
+#define NS_flag_tree1 2
+
 // All the individual decals provided. These are the only graphics I will use.
 // Note that decal zero is empty and unused: I want nonzero IDs for the valid ones.
 #define NS_DECAL_dummy        0

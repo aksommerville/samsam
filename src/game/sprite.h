@@ -20,6 +20,7 @@ void sprite_render(struct sprite *sprite);
 
 struct sprite *sprite_new_bullet(double x,double y,double dx);
 struct sprite *sprite_new_arrow(double x,double y,double dx);
+struct sprite *sprite_new_log(double x,double y);
 
 /* Caller prepares (x,y,decal). We do the rest.
  * (a,b,c) are the last three bytes of the map command spawning it.

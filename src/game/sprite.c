@@ -75,6 +75,18 @@ struct sprite *sprite_new_arrow(double x,double y,double dx) {
   return sprite;
 }
 
+/* Log.
+ */
+ 
+struct sprite *sprite_new_log(double x,double y) {
+  y-=6.0;
+  struct sprite *sprite=sprite_new(x,y);
+  if (sprite) {
+    sprite->decal=decalv+NS_DECAL_log;
+  }
+  return sprite;
+}
+
 /* Dog. Decorative. Looks at the hero.
  */
  
@@ -92,10 +104,23 @@ static int sprite_dog_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) 
 }
 
 /* Door.
+ * iv[0]=mapid
  */
  
 static int sprite_door_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) {
   sprite->iv[0]=(a<<8)|b; // mapid
+  return 0;
+}
+
+/* Pine.
+ * iv[0]=flagid
+ */
+ 
+static int sprite_pine_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) {
+  sprite->iv[0]=a;
+  if (flag_get(sprite->iv[0])) {
+    sprite->defunct=1;
+  }
   return 0;
 }
 
@@ -106,6 +131,7 @@ int sprite_init_per_map(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) {
   switch (sprite->decal-decalv) {
     case NS_DECAL_dog: return sprite_dog_init(sprite,a,b,c);
     case NS_DECAL_door: return sprite_door_init(sprite,a,b,c);
+    case NS_DECAL_pine: return sprite_pine_init(sprite,a,b,c);
   }
   return 0;
 }

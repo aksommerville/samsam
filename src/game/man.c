@@ -144,8 +144,36 @@ static void man_begin_bomb(struct man *man) {
  
 static void man_begin_ax(struct man *man) {
   man->action=NS_DECAL_ax;
-  egg_play_sound(RID_sound_swipe);
-  //TODO chop down trees
+  
+  /* Any tree in range of (x) gets chopped, and track the lowest (y) among them.
+   * In order to make horizontal blockages, we do stack trees on top of each other.
+   * Don't place different trees near the same column.
+   * Hmmmm this also means you can chop them down from way above. I think we can arrange for that not to come up.
+   */
+  double x=man->x,y=0.0,treex=x;
+  if (man->larm) x-=12.0; else x+=12.0;
+  struct sprite *tree=g.spritev;
+  int i=g.spritec;
+  for (;i-->0;tree++) {
+    if (tree->defunct) continue;
+    if (tree->decal!=decalv+NS_DECAL_pine) continue;
+    double dx=tree->x-x;
+    if ((dx<-24.0)||(dx>24.0)) continue;
+    if (tree->y>y) y=tree->y;
+    treex=tree->x;
+    flag_set(tree->iv[0],1);
+    tree->defunct=1;
+  }
+  
+  // Did we chop something?
+  if (y>0.0) {
+    egg_play_sound(RID_sound_choptree);
+    sprite_new_log(treex,y+(decalv[NS_DECAL_pine].h>>1));
+  
+  // Swing and a miss.
+  } else {
+    egg_play_sound(RID_sound_swipe);
+  }
 }
 
 /* Sword: Chop down animals.
@@ -306,10 +334,38 @@ void man_render(struct man *man) {
   }
 }
 
+/* Are we colliding with a tree?
+ */
+ 
+static const struct sprite*man_find_tree(const struct man *man) {
+  struct sprite *tree=g.spritev;
+  int i=g.spritec;
+  for (;i-->0;tree++) {
+    if (tree->defunct) continue;
+    if (tree->decal!=decalv+NS_DECAL_pine) continue;
+    double dx=man->x-tree->x;
+    if ((dx<-10.0)||(dx>10.0)) continue;
+    double dy=man->y-tree->y;
+    if ((dy<-20.0)||(dy>20.0)) continue;
+    return tree;
+  }
+  return 0;
+}
+
 /* Shift item to leading arm.
+ * Enforce horizontal constraints.
  */
  
 void man_face_left(struct man *man) {
+  double edge=decalv[NS_DECAL_man].w>>1;
+  if (g.indoors) edge+=decalv[NS_DECAL_dollar].w;
+  if (man->x<edge) man->x=edge;
+  
+  const struct sprite *tree=man_find_tree(man);
+  if (tree) {
+    man->x=tree->x+(decalv[NS_DECAL_man].w>>1);
+  }
+  
   if (!man->carry_item) return;
   if (man->larm!=MAN_ARM_DOWN) return;
   if (man->rarm==MAN_ARM_SIDE) {
@@ -322,6 +378,15 @@ void man_face_left(struct man *man) {
 }
 
 void man_face_right(struct man *man) {
+  double edge=g.worldw-(decalv[NS_DECAL_man].w>>1);
+  if (g.indoors) edge-=decalv[NS_DECAL_dollar].w;
+  if (man->x>edge) man->x=edge;
+  
+  const struct sprite *tree=man_find_tree(man);
+  if (tree) {
+    man->x=tree->x-(decalv[NS_DECAL_man].w>>1);
+  }
+  
   if (!man->carry_item) return;
   if (man->rarm!=MAN_ARM_DOWN) return;
   if (man->larm==MAN_ARM_SIDE) {

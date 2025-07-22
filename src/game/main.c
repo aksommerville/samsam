@@ -21,10 +21,10 @@ int egg_client_init() {
   srand_auto();
   egg_texture_load_image(g.texid=egg_texture_new(),RID_image_graphics);
   
-  if (load_map(RID_map_home)<0) return -1;
+  if (reset_session()<0) return -1;
   
-  //g.man.rarm=MAN_ARM_SIDE;
-  //g.man.carry_item=NS_DECAL_umbrella;
+  g.man.rarm=MAN_ARM_SIDE;
+  g.man.carry_item=NS_DECAL_ax;
   
   return 0;
 }
@@ -75,17 +75,11 @@ void egg_client_update(double elapsed) {
     case EGG_BTN_LEFT: {
         g.man.walking=1;
         g.man.x-=MAN_WALK_SPEED*elapsed;
-        double edge=decalv[NS_DECAL_man].w>>1;
-        if (g.indoors) edge+=decalv[NS_DECAL_dollar].w;
-        if (g.man.x<edge) g.man.x=edge;
         man_face_left(&g.man);
       } break;
     case EGG_BTN_RIGHT: {
         g.man.walking=1;
         g.man.x+=MAN_WALK_SPEED*elapsed;
-        double edge=g.worldw-(decalv[NS_DECAL_man].w>>1);
-        if (g.indoors) edge-=decalv[NS_DECAL_dollar].w;
-        if (g.man.x>edge) g.man.x=edge;
         man_face_right(&g.man);
       } break;
     default: g.man.walking=0;
@@ -156,4 +150,29 @@ void egg_client_render() {
   man_render(&g.man);
   
   graf_flush(&g.graf);
+}
+
+/* Flags.
+ */
+ 
+int flag_get(int flagid) {
+  if (flagid<0) return 0;
+  int p=flagid>>3;
+  if (p>=sizeof(g.flagv)) return 0;
+  return (g.flagv[p]&(1<<(flagid&7)))?1:0;
+}
+
+int flag_set(int flagid,int v) {
+  if (flagid<2) return 0; // Flags zero and one are read-only.
+  int p=flagid>>3;
+  if (p>=sizeof(g.flagv)) return 0;
+  uint8_t mask=1<<(flagid&7);
+  if (v) {
+    if (g.flagv[p]&mask) return 0;
+    g.flagv[p]|=mask;
+  } else {
+    if (!(g.flagv[p]&mask)) return 0;
+    g.flagv[p]&=~mask;
+  }
+  return 1;
 }
