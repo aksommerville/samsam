@@ -23,8 +23,9 @@ int egg_client_init() {
   
   if (reset_session()<0) return -1;
   
-  g.man.rarm=MAN_ARM_SIDE;
-  g.man.carry_item=NS_DECAL_ax;
+  //g.man.rarm=MAN_ARM_SIDE;
+  //g.man.carry_item=NS_DECAL_ax;
+  //flag_set(NS_flag_burgerking,1);//XXX
   
   return 0;
 }

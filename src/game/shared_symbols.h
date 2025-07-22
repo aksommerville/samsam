@@ -32,6 +32,7 @@
 #define NS_flag_zero 0
 #define NS_flag_one 1
 #define NS_flag_tree1 2
+#define NS_flag_burgerking 3
 
 // All the individual decals provided. These are the only graphics I will use.
 // Note that decal zero is empty and unused: I want nonzero IDs for the valid ones.

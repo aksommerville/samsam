@@ -12,8 +12,8 @@ struct sprite {
   void (*render)(struct sprite *sprite);
   void (*update)(struct sprite *sprite,double elapsed);
   int defunct;
-  double fv[4];
-  int iv[4];
+  double fv[8];
+  int iv[8];
 };
 
 void sprite_render(struct sprite *sprite);

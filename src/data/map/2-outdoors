@@ -1,9 +1,20 @@
 00
 
 width (u16)1500
+
 hero (u16)1000 (u16)252
 sprite (u16)1000 (u16)253 (u8:DECAL)house 0x000000
 sprite (u16)1000 (u16)253 (u8:DECAL)door map:home 0x00
+
 sprite (u16)700 (u16)192 (u8:DECAL)pine (u8:flag)tree1 0x0000
 sprite (u16)700 (u16)222 (u8:DECAL)pine (u8:flag)tree1 0x0000
 sprite (u16)700 (u16)252 (u8:DECAL)pine (u8:flag)tree1 0x0000
+
+platform (u16)1140 (u16)220 (u16)80 (u8:platform)bar 0x00
+platform (u16)1240 (u16)180 (u16)80 (u8:platform)bar 0x00
+platform (u16)1340 (u16)140 (u16)80 (u8:platform)bar 0x00
+platform (u16)1300 (u16)100 (u16)180 (u8:platform)bar 0x00
+sprite (u16)1320 (u16)100 (u8:DECAL)pottedplant 0x000000
+sprite (u16)1460 (u16)100 (u8:DECAL)pottedplant 0x000000
+sprite (u16)1390 (u16)100 (u8:DECAL)burger 0x000000
+sprite (u16)1420 (u16)253 (u8:DECAL)ghost 0x000000
