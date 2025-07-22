@@ -2,6 +2,8 @@
 
 struct g g={0};
 
+static int texid_msg=0,msgw=0,msgh=0;
+
 void egg_client_quit(int status) {
 }
 
@@ -26,6 +28,9 @@ int egg_client_init() {
   g.platformv[g.platformc++]=(struct platform){110,140, 61};
   g.platformv[g.platformc++]=(struct platform){ 50, 80, 81};
   g.platformv[g.platformc++]=(struct platform){300,100,101};
+  
+  texid_msg=generate_label("Hello! This is the game.",-1);
+  egg_texture_get_status(&msgw,&msgh,texid_msg);
   
   return 0;
 }
@@ -56,10 +61,12 @@ void egg_client_update(double elapsed) {
     case EGG_BTN_LEFT: {
         g.man.walking=1;
         g.man.x-=MAN_WALK_SPEED*elapsed;
+        man_face_left(&g.man);
       } break;
     case EGG_BTN_RIGHT: {
         g.man.walking=1;
         g.man.x+=MAN_WALK_SPEED*elapsed;
+        man_face_right(&g.man);
       } break;
     default: g.man.walking=0;
   }
@@ -91,6 +98,8 @@ void egg_client_render() {
     const struct decal *d=decalv+g.dp;
     graf_draw_decal(&g.graf,g.texid,(FBW>>1)-(d->w>>1),(FBH>>1)-(d->h>>1),d->x,d->y,d->w,d->h,0);
   }
+  
+  graf_draw_decal(&g.graf,texid_msg,(FBW>>1)-(msgw>>1),10,0,0,msgw,msgh,0);
   
   graf_flush(&g.graf);
 }

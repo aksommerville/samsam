@@ -101,3 +101,30 @@ void man_render(struct man *man) {
     }
   }
 }
+
+/* Shift item to leading arm.
+ */
+ 
+void man_face_left(struct man *man) {
+  if (!man->carry_item) return;
+  if (man->larm!=MAN_ARM_DOWN) return;
+  if (man->rarm==MAN_ARM_SIDE) {
+    man->rarm=MAN_ARM_DOWN;
+    man->larm=MAN_ARM_SIDE;
+  } else if (man->rarm==MAN_ARM_UP) {
+    man->rarm=MAN_ARM_DOWN;
+    man->larm=MAN_ARM_UP;
+  }
+}
+
+void man_face_right(struct man *man) {
+  if (!man->carry_item) return;
+  if (man->rarm!=MAN_ARM_DOWN) return;
+  if (man->larm==MAN_ARM_SIDE) {
+    man->larm=MAN_ARM_DOWN;
+    man->rarm=MAN_ARM_SIDE;
+  } else if (man->larm==MAN_ARM_UP) {
+    man->larm=MAN_ARM_DOWN;
+    man->rarm=MAN_ARM_UP;
+  }
+}

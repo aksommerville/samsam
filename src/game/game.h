@@ -27,4 +27,10 @@ extern struct g {
   int dp;//XXX
 } g;
 
+/* Labels are strictly one line, monospaced.
+ * There is always a 1-pixel border.
+ * Returns a texture id which the caller must delete.
+ */
+int generate_label(const char *src,int srcc);
+
 #endif

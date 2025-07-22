@@ -14,6 +14,7 @@ I am going to modify the graphics in at least two ways:
  - Replace all the off-yellow pixels with colors of my choosing.
  - One pixel of the Mediterranean was transparent, between Italy and Tunisia. I made it blue.
  - Ditto one pixel around New Orleans.
+ - We can have text! There's enough room in the Pacific for a G0 font of 3x5 glyphs.
  
 rishita wrote on Discord:
 heres the deal: you must use only these provided visual assets. 
@@ -27,3 +28,10 @@ Seems we are well within rights to make those two changes.
 Can I allow myself the liberty to change all the off-yellow pixels too?
 rishita certainly implies so.
 Keeping them in the original colors, I just can't, it's so fucking ugly.
+
+2025-07-22T07:05
+A plan is taking shape. I've got the graphics colored, and they don't look so bad now.
+Make a trivial platformer.
+Pick up coins in the wild, trade them to the peddlar for things, and give those to the flying cheeseburger.
+Once three things are given to the cheeseburger you win.
+Um. It's not going to be all that engaging of a game.
