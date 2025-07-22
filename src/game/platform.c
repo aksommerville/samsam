@@ -4,10 +4,11 @@
  */
  
 void platform_render(struct platform *platform) {
+  //TODO Some platforms will be arrows stuck in trees, not the green bar.
   const struct decal *dedge=decalv+DECAL_edge;
   const struct decal *dfill=decalv+DECAL_platform;
-  int xz=platform->x+platform->w-dedge->w; // column where the fill ends.
-  int x=platform->x;
+  int x=platform->x-g.scrollx;
+  int xz=x+platform->w-dedge->w; // column where the fill ends.
   graf_draw_decal(&g.graf,g.texid,x,platform->y,dedge->x,dedge->y,dedge->w,dedge->h,0);
   x+=dedge->w;
   while (x+dfill->w<=xz) {

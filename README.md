@@ -47,3 +47,16 @@ Um. It's not going to be all that engaging of a game.
 - [ ] Game over modal.
 - [ ] Music.
 - [ ] Sound effects.
+
+Which souvenirs can do something beyond trading?
+ - Mattock: Break stones, obviously, but I don't think we have any stones.
+ - Shield: Block projectiles... Can we have projectiles?
+ - Sword: Kill the peddlar or the burger.
+ - Shotgun: Kill the peddlar or the burger.
+ - Bomb: See Mattock.
+ - Bow: Fire arrows. Oooh! Can we have the arrows turn into platforms when they hit a tree, a la Artemis?
+ - Ax: Chop down trees.
+ - Umbrella: Reduce terminal velocity.
+ - Hourglass: Freeze time. Like the Shield, maybe useful if there are projectiles.
+ - Magnifier: Decorative text like "no clues here"
+ - Crown: Wear it instead of carrying it? Er no, you carry it, but the burger will wear it.

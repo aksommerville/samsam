@@ -118,11 +118,104 @@ void man_unjump(struct man *man) {
   man->jumping=0;
 }
 
-/* Trigger stateless action.
+/* Mattock: Break rocks.
+ */
+ 
+static void man_begin_mattock(struct man *man) {
+  man->action=DECAL_mattock;
+  egg_play_sound(RID_sound_swipe);
+  //TODO break rocks
+}
+
+/* Bomb: Break rocks and lose it.
+ */
+ 
+static void man_begin_bomb(struct man *man) {
+  man->carry_item=0;
+  man->larm=man->rarm=MAN_ARM_DOWN;
+  egg_play_sound(RID_sound_explode);
+  //TODO break rocks
+}
+
+/* Ax: Chop down trees.
+ */
+ 
+static void man_begin_ax(struct man *man) {
+  man->action=DECAL_ax;
+  egg_play_sound(RID_sound_swipe);
+  //TODO chop down trees
+}
+
+/* Sword: Chop down animals.
+ */
+ 
+static void man_begin_sword(struct man *man) {
+  man->action=DECAL_sword;
+  egg_play_sound(RID_sound_swipe);
+  //TODO deal damage
+}
+
+/* Shotgun: Fire a destructive projectile.
+ */
+ 
+static void man_begin_shotgun(struct man *man) {
+  double y=man->y-9.0;
+  double x=man->x;
+  if (man->larm) x-=17.0; else x+=17.0;
+  struct sprite *bullet=sprite_new_bullet(x,y,man->larm?-1.0:1.0);
+  if (!bullet) return;
+  egg_play_sound(RID_sound_shotgun);
+}
+
+/* Bow: Fire a projectile that turns into a platform.
+ */
+ 
+static void man_begin_bow(struct man *man) {
+  double y=man->y-6.0;
+  double x=man->x;
+  if (man->larm) x-=10.0; else x+=10.0;
+  struct sprite *arrow=sprite_new_arrow(x,y,man->larm?-1.0:1.0);
+  if (!arrow) return;
+  egg_play_sound(RID_sound_bow);
+}
+
+/* Hourglass: Freeze time.
+ */
+ 
+static void man_begin_hourglass(struct man *man) {
+  egg_play_sound(RID_sound_hourglass);
+  man->action=DECAL_hourglass;
+  //TODO freeze time
+}
+
+/* Magnifier: Search for clues.
+ */
+ 
+static void man_begin_magnifier(struct man *man) {
+  //TODO clues
+}
+
+/* Trigger action.
  */
  
 void man_action(struct man *man) {
-  fprintf(stderr,"%s item=%d\n",__func__,man->carry_item);//TODO
+  switch (man->carry_item) {
+    case DECAL_mattock: man_begin_mattock(man); break;
+    case DECAL_sword: man_begin_sword(man); break;
+    case DECAL_shotgun: man_begin_shotgun(man); break;
+    case DECAL_bomb: man_begin_bomb(man); break;
+    case DECAL_bow: man_begin_bow(man); break;
+    case DECAL_ax: man_begin_ax(man); break;
+    case DECAL_hourglass: man_begin_hourglass(man); break;
+    case DECAL_magnifier: man_begin_magnifier(man); break;
+  }
+}
+
+void man_unaction(struct man *man) {
+  switch (man->action) {
+    //TODO
+  }
+  man->action=0;
 }
 
 /* Render.
@@ -139,7 +232,7 @@ void man_render(struct man *man) {
   const int shouldery=8; // Top to shoulder.
   
   // For now at least, man's position are just framebuffer pixels.
-  int dstx=(int)(man->x)-(decal->w>>1);
+  int dstx=(int)(man->x)-(decal->w>>1)-g.scrollx;
   int dsty=(int)(man->y)-(decal->h>>1);
   
   // Legs first. We don't slice them exactly; just take half of the decal's width.
@@ -192,6 +285,20 @@ void man_render(struct man *man) {
       idecal=0;
     }
     if (idecal) {
+      // Some items, when in use, acquire a new transform.
+      switch (man->action) {
+        case DECAL_mattock: xform|=EGG_XFORM_YREV; dy+=6; break;
+        case DECAL_sword: xform|=EGG_XFORM_YREV; dy+=10; break;
+        case DECAL_ax: if (man->larm) {
+            xform=EGG_XFORM_SWAP;
+            dx-=11;
+            dy+=12;
+          } else {
+            xform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
+            dx-=4;
+            dy+=12;
+          } break;
+      }
       graf_draw_decal(&g.graf,g.texid,ix-(idecal->w>>1)+dx,iy-(idecal->h>>1)+dy,idecal->x,idecal->y,idecal->w,idecal->h,xform);
     }
   }

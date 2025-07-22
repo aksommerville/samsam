@@ -23,6 +23,7 @@ struct man {
   const struct platform *platform; // WEAK, owned by (g.platformv), may be null.
   double jumppower;
   int jumping; // Don't touch; use man_jump() and man_unjump().
+  int action; // Decal ID if in progress.
 };
 
 void man_update(struct man *man,double elapsed);
@@ -38,5 +39,6 @@ void man_jump(struct man *man);
 void man_unjump(struct man *man);
 
 void man_action(struct man *man);
+void man_unaction(struct man *man);
 
 #endif

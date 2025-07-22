@@ -4,7 +4,8 @@
 #define FBW 448
 #define FBH 252
 
-#define PLATFORM_LIMIT 16
+#define PLATFORM_LIMIT 64
+#define SPRITE_LIMIT 64
 
 #include "egg/egg.h"
 #include "opt/stdlib/egg-stdlib.h"
@@ -13,6 +14,7 @@
 #include "shared_symbols.h"
 #include "man.h"
 #include "platform.h"
+#include "sprite.h"
 
 extern struct g {
   void *rom;
@@ -24,6 +26,10 @@ extern struct g {
   struct man man;
   struct platform platformv[PLATFORM_LIMIT];
   int platformc;
+  struct sprite spritev[SPRITE_LIMIT];
+  int spritec;
+  int scrollx;
+  double worldw;
 } g;
 
 /* Labels are strictly monospaced. Pad with spaces if you like.
