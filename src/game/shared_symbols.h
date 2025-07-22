@@ -64,7 +64,7 @@
 #define DECAL_widemouth 37
 #define DECAL_house 38
 #define DECAL_milk 39
-#define DECAL_puffball 40
+#define DECAL_burger 40
 #define DECAL_ivy 41
 #define DECAL_earcup 42
 #define DECAL_pottedplant 43
@@ -82,6 +82,8 @@
 #define DECAL_COUNT 55
 extern const struct decal {
   int x,y,w,h;
+  int flop; // -1 to flop in left hand, 1 in right, 0 none.
+  int holddx,holddy; // Offset when held in the right hand (reverse dx in left).
 } decalv[DECAL_COUNT];
 
 #endif

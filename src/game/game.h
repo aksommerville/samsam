@@ -24,7 +24,6 @@ extern struct g {
   struct man man;
   struct platform platformv[PLATFORM_LIMIT];
   int platformc;
-  int dp;//XXX
 } g;
 
 /* Labels are strictly monospaced. Pad with spaces if you like.

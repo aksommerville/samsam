@@ -1,6 +1,11 @@
 #include "game.h"
 
 #define MAN_LEG_SPEED 8.0
+#define MAN_GRAVITY_RATE 450.0 /* px/s**2 */
+#define MAN_TERMINAL_VELOCITY 300.0 /* px/s */
+#define MAN_TERMINAL_VELOCITY_UMBRELLA 80.0 /* px/s */
+#define MAN_JUMP_POWER_INITIAL 300.0 /* px/s */
+#define MAN_JUMP_POWER_DECEL 700.0 /* px/s**2 */
 
 /* Update animation.
  */
@@ -36,6 +41,88 @@ void man_update(struct man *man,double elapsed) {
     if ((man->lleg-=elapsed*MAN_LEG_SPEED)<=0.0) man->lleg=0.0;
     if ((man->rleg-=elapsed*MAN_LEG_SPEED)<=0.0) man->rleg=0.0;
   }
+  
+  // Jumping?
+  if (man->jumping) {
+    man->seated=0;
+    man->platform=0;
+    man->y-=man->jumppower*elapsed;
+    if ((man->jumppower-=elapsed*MAN_JUMP_POWER_DECEL)<=0.0) {
+      man->jumppower=0.0;
+      man->jumping=0;
+    }
+  
+  // Check that we're still seated.
+  } else if (man->seated) {
+    man->gravity=0.0;
+    if (man->platform) { // have we stepped off it?
+      int lx=(int)man->x-(decalv[DECAL_man].w>>1);
+      int rx=lx+decalv[DECAL_man].w;
+      if ((rx<=man->platform->x)||(lx>=man->platform->x+man->platform->w)) {
+        man->seated=0;
+        man->platform=0;
+      }
+    }
+    
+  // Apply gravity.
+  } else {
+    man->gravity+=MAN_GRAVITY_RATE*elapsed;
+    double termv=(man->carry_item==DECAL_umbrella)?MAN_TERMINAL_VELOCITY_UMBRELLA:MAN_TERMINAL_VELOCITY;
+    if (man->gravity>termv) man->gravity=termv;
+    int pvy=(int)man->y+(decalv[DECAL_man].h>>1);
+    man->y+=elapsed*man->gravity;
+    int ny=(int)man->y+(decalv[DECAL_man].h>>1);
+    if (ny>=FBH) {
+      man->y=FBH-(decalv[DECAL_man].h>>1);
+      man->seated=1;
+    } else {
+      int lx=(int)man->x-(decalv[DECAL_man].w>>1);
+      int rx=lx+decalv[DECAL_man].w;
+      const struct platform *platform=g.platformv;
+      int i=g.platformc;
+      for (;i-->0;platform++) {
+        if (platform->x>=rx) continue;
+        if (platform->x+platform->w<=lx) continue;
+        if (pvy>platform->y) continue;
+        if (ny<platform->y) continue;
+        man->y=platform->y-(decalv[DECAL_man].h>>1);
+        man->seated=1;
+        man->gravity=0.0;
+        man->platform=platform;
+        break;
+      }
+    }
+  }
+}
+
+/* Begin or end jump, the player controls.
+ */
+ 
+void man_jump(struct man *man) {
+  if (man->jumping) return;
+  if (!man->seated) return; // TODO Early jump forgiveness? Start a clock and trigger it when we hit the ground. Also some coyote time.
+  if ((g.pvinput&EGG_BTN_DOWN)&&man->platform) {
+    egg_play_sound(RID_sound_downjump);
+    man->y+=2.0;
+    man->seated=0;
+    man->platform=0;
+  } else {
+    egg_play_sound(RID_sound_jump);
+    man->jumping=1;
+    man->jumppower=MAN_JUMP_POWER_INITIAL;
+  }
+}
+
+void man_unjump(struct man *man) {
+  if (!man->jumping) return;
+  man->jumping=0;
+}
+
+/* Trigger stateless action.
+ */
+ 
+void man_action(struct man *man) {
+  fprintf(stderr,"%s item=%d\n",__func__,man->carry_item);//TODO
 }
 
 /* Render.
@@ -75,29 +162,37 @@ void man_render(struct man *man) {
   graf_draw_decal(&g.graf,g.texid,dstx+armw,dsty,decal->x+armw,decal->y,decal->w-(armw<<1),trunkh,0);
   
   // Are we carring something?
-  if ((man->carry_item>0)&&(man->carry_item<51)) {
+  if ((man->carry_item>0)&&(man->carry_item<DECAL_COUNT)) {
     const struct decal *idecal=decalv+man->carry_item;
-    int ix,iy;
+    int ix,iy,xform=0,dx=idecal->holddx,dy=idecal->holddy;
     if ((man->larm==MAN_ARM_UP)&&(man->rarm==MAN_ARM_UP)) { // Both arms up: carry it high and centered.
       ix=dstx+(decal->w>>1);
       iy=dsty-(idecal->h>>2)-3;
+      dx=dy=0;
     } else if (man->larm==MAN_ARM_SIDE) { // Left arm out?
       ix=dstx-armh+4;
       iy=dsty+shouldery;
+      if (idecal->flop<0) xform=EGG_XFORM_XREV;
+      dx=-dx;
     } else if (man->rarm==MAN_ARM_SIDE) { // Right arm out?
       ix=dstx+decal->w+armh-4;
       iy=dsty+shouldery;
+      if (idecal->flop>0) xform=EGG_XFORM_XREV;
+      dx--;
     } else if (man->larm==MAN_ARM_UP) { // Left arm up?
       ix=dstx+2;
       iy=dsty-(idecal->h>>2);
-    } else if (man->rarm==MAN_ARM_UP) { // Right arm arm?
+      if (idecal->flop<0) xform=EGG_XFORM_XREV;
+      dx=-dx;
+    } else if (man->rarm==MAN_ARM_UP) { // Right arm up?
       ix=dstx+decal->w-2;
       iy=dsty-(idecal->h>>2);
+      if (idecal->flop>0) xform=EGG_XFORM_XREV;
     } else { // No arms in play; do not render the item.
       idecal=0;
     }
     if (idecal) {
-      graf_draw_decal(&g.graf,g.texid,ix-(idecal->w>>1),iy-(idecal->h>>1),idecal->x,idecal->y,idecal->w,idecal->h,0);
+      graf_draw_decal(&g.graf,g.texid,ix-(idecal->w>>1)+dx,iy-(idecal->h>>1)+dy,idecal->x,idecal->y,idecal->w,idecal->h,xform);
     }
   }
 }

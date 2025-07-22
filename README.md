@@ -38,7 +38,7 @@ Um. It's not going to be all that engaging of a game.
 
 ## TODO
 
-- [ ] Gravity, jumping, and platform respect.
+- [x] Gravity, jumping, and platform respect.
 - [ ] Load scene from maps. Do use "map" resources, but disregard their grid data, use the command list only.
 - [ ] Door.
 - [ ] Coins to collect.
