@@ -8,8 +8,8 @@ clean:;rm -rf mid out
 else
 
 OPT_ENABLE:=stdlib graf text rom
-PROJNAME:=samesame2025
-PROJRDNS:=com.aksommerville.egggame.samesame2025
+PROJNAME:=samsam
+PROJRDNS:=com.aksommerville.egggame.samsam
 ENABLE_SERVER_AUDIO:=
 BUILDABLE_DATA_TYPES:=
 

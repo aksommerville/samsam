@@ -1,20 +1,24 @@
-# TODO Title
+# Sam-Sam
 
 Requires [Egg](https://github.com/aksommerville/egg) to build.
 
 Same Same Game Jam, 21 July 2025.
+The idea is all the devs have to use the same set of provided graphics.
 
-I'm so fucking stumped. What to do?
-I swore I wouldn't modify the provided graphics. But these graphics are incomplete and make no sense.
-
-I am going to modify the graphics in at least two ways:
- - Combine all decals in one image.
- - Shuffle positions such that all decals are reachable.
- - Recolor the shotgun's outline. It's crazy to have two different blacks when there's otherwise just two colors total.
- - Replace all the off-yellow pixels with colors of my choosing.
- - One pixel of the Mediterranean was transparent, between Italy and Tunisia. I made it blue.
- - Ditto one pixel around New Orleans.
- - We can have text! There's enough room in the Pacific for a G0 font of 3x5 glyphs.
+Modifications to the shared graphics:
+ - Images are resliced and combined into one image. (the original had a few that were unreachable due to overlapping boxes).
+ - The off-yellow pixels are all replaced with colors of my choosing.
+ - All other (black and transparent) pixels are retained, except:
+ - - Two pixels of the globe were transparent, seemingly by accident. I filled those in.
+ - - The shotgun's outline was pure black. I made it #0e0e0e like the others.
+ - Added a 3x5 G0 font in the Pacific Ocean, nominally obeying my rules, but definitely violating the spirit of them.
+ - The intent of a few shapes was unclear so I took liberties and one can assume these were not the intended shapes:
+ - - Sitting dog.
+ - - Candy bar.
+ - - Cheeseburger.
+ - - Cheeseburger's wing.
+ - - Cookie.
+ - - Ghost wearing a backpack.
  
 rishita wrote on Discord:
 heres the deal: you must use only these provided visual assets. 
@@ -22,12 +26,6 @@ you have the freedom to modify them however you like, whether that means recolor
 rearranging elements, or using them in new contexts. however, its important that your 
 modifications dont drastically change the individual graphics to the point where 
 they no longer resemble their original character or composition.
-
-Seems we are well within rights to make those two changes.
-
-Can I allow myself the liberty to change all the off-yellow pixels too?
-rishita certainly implies so.
-Keeping them in the original colors, I just can't, it's so fucking ugly.
 
 2025-07-22T07:05
 A plan is taking shape. I've got the graphics colored, and they don't look so bad now.
