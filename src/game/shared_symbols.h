@@ -33,6 +33,16 @@
 #define NS_flag_one 1
 #define NS_flag_tree1 2
 #define NS_flag_burgerking 3
+#define NS_flag_coin001 4
+#define NS_flag_coin002 5
+#define NS_flag_coin003 6
+#define NS_flag_coin004 7
+#define NS_flag_coin005 8
+#define NS_flag_coin006 9
+#define NS_flag_coin007 10
+#define NS_flag_coin008 11
+#define NS_flag_coin009 12
+#define NS_flag_coin010 13
 
 // All the individual decals provided. These are the only graphics I will use.
 // Note that decal zero is empty and unused: I want nonzero IDs for the valid ones.
@@ -96,6 +106,7 @@ extern const struct decal {
   int x,y,w,h;
   int flop; // -1 to flop in left hand, 1 in right, 0 none.
   int holddx,holddy; // Offset when held in the right hand (reverse dx in left).
+  int price; // How many coins to buy from ghost? If zero, not for sale.
 } decalv[DECAL_COUNT];
 
 #endif

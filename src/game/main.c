@@ -38,16 +38,29 @@ static void check_doors() {
   const struct sprite *sprite=g.spritev;
   int i=g.spritec;
   for (;i-->0;sprite++) {
-    if (sprite->decal!=decalv+NS_DECAL_door) continue;
-    double dx=g.man.x-sprite->x;
-    if ((dx<-10.0)||(dx>10.0)) continue;
-    double dy=g.man.y-sprite->y;
-    if ((dy<-10.0)||(dy>10.0)) continue;
-    if (load_map(sprite->iv[0])<0) {
-      fprintf(stderr,"Failed to load map:%d\n",sprite->iv[0]);
-      egg_terminate(1);
+  
+    // Door.
+    if (sprite->decal==decalv+NS_DECAL_door) {
+      double dx=g.man.x-sprite->x;
+      if ((dx<-10.0)||(dx>10.0)) continue;
+      double dy=g.man.y-sprite->y;
+      if ((dy<-10.0)||(dy>10.0)) continue;
+      if (load_map(sprite->iv[0])<0) {
+        fprintf(stderr,"Failed to load map:%d\n",sprite->iv[0]);
+        egg_terminate(1);
+      }
+      return;
+    
+    // Ghost.
+    } else if (sprite->decal==decalv+NS_DECAL_ghost) {
+      if (g.man.carry_item) continue; // Only when empty-handed.
+      double dx=g.man.x-sprite->x;
+      if ((dx<-20.0)||(dx>20.0)) continue;
+      double dy=g.man.y-sprite->y;
+      if ((dy<-10.0)||(dy>10.0)) continue;
+      begin_modal_ghost();
+      return;
     }
-    return;
   }
 }
 
@@ -61,13 +74,27 @@ void egg_client_update(double elapsed) {
    */
   int input=egg_input_get_one(0);
   if (input!=g.pvinput) {
-    if ((input&EGG_BTN_SOUTH)&&!(g.pvinput&EGG_BTN_SOUTH)) man_jump(&g.man);
-    else if (!(input&EGG_BTN_SOUTH)&&(g.pvinput&EGG_BTN_SOUTH)) man_unjump(&g.man);
-    if ((input&EGG_BTN_WEST)&&!(g.pvinput&EGG_BTN_WEST)) man_action(&g.man);
-    else if (!(input&EGG_BTN_WEST)&&(g.pvinput&EGG_BTN_WEST)) man_unaction(&g.man);
+    if (g.modal) {
+      modal_input(g.modal,input,g.pvinput);
+    } else {
+      if ((input&EGG_BTN_SOUTH)&&!(g.pvinput&EGG_BTN_SOUTH)) man_jump(&g.man);
+      else if (!(input&EGG_BTN_SOUTH)&&(g.pvinput&EGG_BTN_SOUTH)) man_unjump(&g.man);
+      if ((input&EGG_BTN_WEST)&&!(g.pvinput&EGG_BTN_WEST)) man_action(&g.man);
+      else if (!(input&EGG_BTN_WEST)&&(g.pvinput&EGG_BTN_WEST)) man_unaction(&g.man);
+      if ((input&EGG_BTN_UP)&&!(g.pvinput&EGG_BTN_UP)) check_doors();
+    }
     if ((input&EGG_BTN_AUX3)&&!(g.pvinput&EGG_BTN_AUX3)) egg_terminate(0);
-    if ((input&EGG_BTN_UP)&&!(g.pvinput&EGG_BTN_UP)) check_doors();
     g.pvinput=input;
+  }
+  
+  if (g.modal) {
+    modal_update(g.modal,elapsed);
+    if (g.modal&&g.modal->defunct) {
+      modal_del(g.modal);
+      g.modal=0;
+    } else {
+      return;
+    }
   }
   
   /* Move the hero ourselves, then call out for animation, gravity, jumping, etc.
@@ -103,14 +130,10 @@ void egg_client_update(double elapsed) {
   }
 }
 
-/* Render.
+/* Render game.
  */
-
-void egg_client_render() {
-  g.framec++;
-  graf_reset(&g.graf);
-  
-  //TODO modals
+ 
+static void render_game() {
   
   // Establish camera position. It only moves horizontally, and clamps to the edges.
   int worldw=(int)g.worldw;
@@ -149,7 +172,19 @@ void egg_client_render() {
   for (i=g.spritec;i-->0;sprite++) sprite_render(sprite);
   
   man_render(&g.man);
-  
+}
+
+/* Render.
+ */
+
+void egg_client_render() {
+  g.framec++;
+  graf_reset(&g.graf);
+  if (g.modal) {
+    modal_render(g.modal);
+  } else {
+    render_game();
+  }
   graf_flush(&g.graf);
 }
 
@@ -176,4 +211,12 @@ int flag_set(int flagid,int v) {
     g.flagv[p]&=~mask;
   }
   return 1;
+}
+
+/* Modals.
+ */
+ 
+void begin_modal_ghost() {
+  if (g.modal) modal_del(g.modal);
+  g.modal=modal_new_ghost();
 }

@@ -128,6 +128,7 @@ static int sprite_pine_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c)
  * fv[0..3]: Summoning range. (LTRB)
  * fv[4]: animclock
  * iv[0]: animframe(0,1)
+ * iv[1]: appeased
  */
  
 #define BURGER_SUMMON_SPEED 30.0
@@ -163,6 +164,7 @@ static void sprite_burger_render(struct sprite *sprite) {
 }
 
 static int sprite_burger_is_summoned(const struct sprite *sprite) {
+  if (sprite->iv[1]) return 0;
   if (g.man.x<sprite->fv[0]) return 0;
   if (g.man.x>sprite->fv[2]) return 0;
   if (g.man.y<sprite->fv[1]) return 0;
@@ -187,11 +189,26 @@ static void sprite_burger_update(struct sprite *sprite,double elapsed) {
     } else if (sprite->y>dsty+1.0) {
       sprite->y-=BURGER_SUMMON_SPEED*elapsed;
     }
+    // Once we're close, take his offering.
+    double dx=sprite->x-dstx;
+    double dy=sprite->y-dsty;
+    if ((dx>-2.0)&&(dx<2.0)&&(dy>-2.0)&&(dy<2.0)&&g.man.carry_item) {
+      egg_play_sound(RID_sound_offering);
+      switch (g.man.carry_item) {
+        case NS_DECAL_crown: flag_set(NS_flag_burgerking,1); break;
+      }
+      g.score+=decalv[g.man.carry_item].price;
+      g.man.larm=g.man.rarm=MAN_ARM_DOWN;
+      g.man.carry_item=0;
+      sprite->iv[1]=1;
+    }
   
   // Fly away.
   } else {
     if (sprite->y>-20.0) {
       sprite->y-=BURGER_AWAY_SPEED*elapsed;
+    } else {
+      sprite->iv[1]=0;
     }
   }
   
@@ -240,6 +257,29 @@ static int sprite_ghost_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c
   return 0;
 }
 
+/* Coin.
+ * iv[0]: Flag id.
+ */
+ 
+static void sprite_coin_update(struct sprite *sprite,double elapsed) {
+  double dx=sprite->x-g.man.x;
+  if ((dx<-8.0)||(dx>8.0)) return;
+  double dy=sprite->y-g.man.y;
+  if ((dy<-8.0)||(dy>8.0)) return;
+  if (g.coinc>=999) return;
+  g.coinc++;
+  egg_play_sound(RID_sound_coin);
+  flag_set(sprite->iv[0],1);
+  sprite->defunct=1;
+}
+ 
+static int sprite_coin_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) {
+  sprite->iv[0]=a;
+  if (flag_get(sprite->iv[0])) sprite->defunct=1;
+  sprite->update=sprite_coin_update;
+  return 0;
+}
+
 /* Generic spawning from map.
  */
  
@@ -250,6 +290,7 @@ int sprite_init_per_map(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) {
     case NS_DECAL_pine: return sprite_pine_init(sprite,a,b,c);
     case NS_DECAL_burger: return sprite_burger_init(sprite,a,b,c);
     case NS_DECAL_ghost: return sprite_ghost_init(sprite,a,b,c);
+    case NS_DECAL_cent: return sprite_coin_init(sprite,a,b,c);
   }
   return 0;
 }

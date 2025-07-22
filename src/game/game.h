@@ -16,6 +16,7 @@
 #include "man.h"
 #include "platform.h"
 #include "sprite.h"
+#include "modal.h"
 
 extern struct g {
   void *rom;
@@ -33,6 +34,9 @@ extern struct g {
   double worldw;
   int indoors;
   uint8_t flagv[32];
+  int coinc;
+  int score;
+  struct modal *modal;
 } g;
 
 /* Labels are strictly monospaced. Pad with spaces if you like.
@@ -49,5 +53,7 @@ int res_get(void *dstpp,int tid,int rid);
 
 int flag_get(int flagid);
 int flag_set(int flagid,int v); // => nonzero if changed
+
+void begin_modal_ghost();
 
 #endif

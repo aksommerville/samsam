@@ -12,3 +12,13 @@ platform (u16)40 (u16)100 (u16)81 0x0000
 sprite (u16)300 (u16)247 (u8:DECAL)dog 0x000000
 sprite (u16)224 (u16)242 (u8:DECAL)door map:outdoors 0x00
 sprite (u16)180 (u16)241 (u8:DECAL)pottedplant 0x000000
+
+sprite (u16)60 (u16)80 (u8:DECAL)cent (u8:flag)coin001 0x0000
+sprite (u16)80 (u16)80 (u8:DECAL)cent (u8:flag)coin002 0x0000
+sprite (u16)100 (u16)80 (u8:DECAL)cent (u8:flag)coin003 0x0000
+sprite (u16)355 (u16)90 (u8:DECAL)cent (u8:flag)coin004 0x0000
+sprite (u16)375 (u16)90 (u8:DECAL)cent (u8:flag)coin005 0x0000
+sprite (u16)395 (u16)90 (u8:DECAL)cent (u8:flag)coin006 0x0000
+sprite (u16)40 (u16)200 (u8:DECAL)cent (u8:flag)coin007 0x0000
+sprite (u16)70 (u16)200 (u8:DECAL)cent (u8:flag)coin008 0x0000
+sprite (u16)350 (u16)200 (u8:DECAL)cent (u8:flag)coin009 0x0000

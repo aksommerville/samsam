@@ -39,14 +39,17 @@ Um. It's not going to be all that engaging of a game.
 - [x] Gravity, jumping, and platform respect.
 - [x] Load scene from maps. Do use "map" resources, but disregard their grid data, use the command list only.
 - [x] Door.
-- [ ] Coins to collect.
-- [ ] Peddlar sprite.
-- [ ] Peddlar modal.
-- [ ] Cheeseburger.
+- [x] Coins to collect.
+- [x] Peddlar sprite.
+- [x] Peddlar modal.
+- [x] Cheeseburger.
 - [ ] Setting and rising sun, moon, and cookie. Modify sky color on changes.
+- [ ] End of game.
 - [ ] Game over modal.
 - [ ] Music.
 - [ ] Sound effects.
+- [ ] Show coins in main view.
+- [ ] Coins and proper shop pricing.
 
 Which souvenirs can do something beyond trading?
  - Mattock: Break stones, obviously, but I don't think we have any stones.
