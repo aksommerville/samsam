@@ -29,7 +29,12 @@ int egg_client_init() {
   g.platformv[g.platformc++]=(struct platform){ 50, 80, 81};
   g.platformv[g.platformc++]=(struct platform){300,100,101};
   
-  texid_msg=generate_label("Hello! This is the game.",-1);
+  texid_msg=generate_label(
+    "Hello! This is the game.\n"
+    "   Indentation is possible.\n"
+    "And as you can see,\n"
+    "multi-line text is no problem.\n"
+  ,-1);
   egg_texture_get_status(&msgw,&msgh,texid_msg);
   
   return 0;

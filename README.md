@@ -35,3 +35,17 @@ Make a trivial platformer.
 Pick up coins in the wild, trade them to the peddlar for things, and give those to the flying cheeseburger.
 Once three things are given to the cheeseburger you win.
 Um. It's not going to be all that engaging of a game.
+
+## TODO
+
+- [ ] Gravity, jumping, and platform respect.
+- [ ] Load scene from maps. Do use "map" resources, but disregard their grid data, use the command list only.
+- [ ] Door.
+- [ ] Coins to collect.
+- [ ] Peddlar sprite.
+- [ ] Peddlar modal.
+- [ ] Cheeseburger.
+- [ ] Setting and rising sun, moon, and cookie. Modify sky color on changes.
+- [ ] Game over modal.
+- [ ] Music.
+- [ ] Sound effects.

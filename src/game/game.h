@@ -27,7 +27,8 @@ extern struct g {
   int dp;//XXX
 } g;
 
-/* Labels are strictly one line, monospaced.
+/* Labels are strictly monospaced. Pad with spaces if you like.
+ * Lines break on LF, nowhere else.
  * There is always a 1-pixel border.
  * Returns a texture id which the caller must delete.
  */
