@@ -37,8 +37,8 @@ Um. It's not going to be all that engaging of a game.
 ## TODO
 
 - [x] Gravity, jumping, and platform respect.
-- [ ] Load scene from maps. Do use "map" resources, but disregard their grid data, use the command list only.
-- [ ] Door.
+- [x] Load scene from maps. Do use "map" resources, but disregard their grid data, use the command list only.
+- [x] Door.
 - [ ] Coins to collect.
 - [ ] Peddlar sprite.
 - [ ] Peddlar modal.

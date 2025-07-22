@@ -10,6 +10,7 @@
 
 struct platform {
   int x,y,w; // Position and size in world pixels. (y) is my top edge, the business edge.
+  int style; // NS_platform_
 };
 
 void platform_render(struct platform *platform);

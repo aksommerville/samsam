@@ -1,0 +1,14 @@
+00
+
+indoors
+width (u16)448
+hero (u16)224 (u16)241
+platform (u16)50 (u16)233 (u16)27 (u8:platform)bed 0x00
+platform (u16)350 (u16)231 (u16)11 (u8:platform)chair 0x00
+platform (u16)370 (u16)227 (u16)22 (u8:platform)table 0x00
+platform (u16)340 (u16)165 (u16)81 0x0000
+platform (u16)340 (u16)105 (u16)81 0x0000
+platform (u16)40 (u16)100 (u16)81 0x0000
+sprite (u16)300 (u16)247 (u8:DECAL)dog 0x000000
+sprite (u16)224 (u16)242 (u8:DECAL)door map:outdoors 0x00
+sprite (u16)180 (u16)241 (u8:DECAL)pottedplant 0x000000

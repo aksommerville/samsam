@@ -45,7 +45,7 @@ static void sprite_bullet_update(struct sprite *sprite,double elapsed) {
 struct sprite *sprite_new_bullet(double x,double y,double dx) {
   struct sprite *sprite=sprite_new(x,y);
   if (sprite) {
-    sprite->decal=decalv+DECAL_speck;
+    sprite->decal=decalv+NS_DECAL_speck;
     sprite->update=sprite_bullet_update;
     sprite->fv[0]=dx*400.0;
   }
@@ -65,7 +65,7 @@ static void sprite_arrow_update(struct sprite *sprite,double elapsed) {
 struct sprite *sprite_new_arrow(double x,double y,double dx) {
   struct sprite *sprite=sprite_new(x,y);
   if (sprite) {
-    sprite->decal=decalv+DECAL_arrow;
+    sprite->decal=decalv+NS_DECAL_arrow;
     sprite->update=sprite_arrow_update;
     sprite->fv[0]=dx*300.0;
     // Decal points down naturally.
@@ -73,4 +73,39 @@ struct sprite *sprite_new_arrow(double x,double y,double dx) {
     else sprite->xform=EGG_XFORM_SWAP;
   }
   return sprite;
+}
+
+/* Dog. Decorative. Looks at the hero.
+ */
+ 
+static void sprite_dog_update(struct sprite *sprite,double elapsed) {
+  if (g.man.x<sprite->x) {
+    sprite->xform=EGG_XFORM_XREV;
+  } else {
+    sprite->xform=0;
+  }
+}
+ 
+static int sprite_dog_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) {
+  sprite->update=sprite_dog_update;
+  return 0;
+}
+
+/* Door.
+ */
+ 
+static int sprite_door_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) {
+  sprite->iv[0]=(a<<8)|b; // mapid
+  return 0;
+}
+
+/* Generic spawning from map.
+ */
+ 
+int sprite_init_per_map(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c) {
+  switch (sprite->decal-decalv) {
+    case NS_DECAL_dog: return sprite_dog_init(sprite,a,b,c);
+    case NS_DECAL_door: return sprite_door_init(sprite,a,b,c);
+  }
+  return 0;
 }

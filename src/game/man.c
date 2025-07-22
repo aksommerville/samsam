@@ -3,7 +3,7 @@
 #define MAN_LEG_SPEED 8.0
 #define MAN_GRAVITY_RATE 450.0 /* px/s**2 */
 #define MAN_TERMINAL_VELOCITY 300.0 /* px/s */
-#define MAN_TERMINAL_VELOCITY_UMBRELLA 80.0 /* px/s */
+#define MAN_TERMINAL_VELOCITY_UMBRELLA 60.0 /* px/s */
 #define MAN_JUMP_POWER_INITIAL 300.0 /* px/s */
 #define MAN_JUMP_POWER_DECEL 700.0 /* px/s**2 */
 
@@ -56,8 +56,8 @@ void man_update(struct man *man,double elapsed) {
   } else if (man->seated) {
     man->gravity=0.0;
     if (man->platform) { // have we stepped off it?
-      int lx=(int)man->x-(decalv[DECAL_man].w>>1);
-      int rx=lx+decalv[DECAL_man].w;
+      int lx=(int)man->x-(decalv[NS_DECAL_man].w>>1);
+      int rx=lx+decalv[NS_DECAL_man].w;
       if ((rx<=man->platform->x)||(lx>=man->platform->x+man->platform->w)) {
         man->seated=0;
         man->platform=0;
@@ -67,17 +67,19 @@ void man_update(struct man *man,double elapsed) {
   // Apply gravity.
   } else {
     man->gravity+=MAN_GRAVITY_RATE*elapsed;
-    double termv=(man->carry_item==DECAL_umbrella)?MAN_TERMINAL_VELOCITY_UMBRELLA:MAN_TERMINAL_VELOCITY;
+    double termv=(man->carry_item==NS_DECAL_umbrella)?MAN_TERMINAL_VELOCITY_UMBRELLA:MAN_TERMINAL_VELOCITY;
     if (man->gravity>termv) man->gravity=termv;
-    int pvy=(int)man->y+(decalv[DECAL_man].h>>1);
+    int pvy=(int)man->y+(decalv[NS_DECAL_man].h>>1);
     man->y+=elapsed*man->gravity;
-    int ny=(int)man->y+(decalv[DECAL_man].h>>1);
-    if (ny>=FBH) {
-      man->y=FBH-(decalv[DECAL_man].h>>1);
+    int ny=(int)man->y+(decalv[NS_DECAL_man].h>>1);
+    double bottom=FBH;
+    if (g.indoors) bottom-=decalv[NS_DECAL_dollar].h;
+    if (ny>=bottom) {
+      man->y=bottom-(decalv[NS_DECAL_man].h>>1);
       man->seated=1;
     } else {
-      int lx=(int)man->x-(decalv[DECAL_man].w>>1);
-      int rx=lx+decalv[DECAL_man].w;
+      int lx=(int)man->x-(decalv[NS_DECAL_man].w>>1);
+      int rx=lx+decalv[NS_DECAL_man].w;
       const struct platform *platform=g.platformv;
       int i=g.platformc;
       for (;i-->0;platform++) {
@@ -85,7 +87,7 @@ void man_update(struct man *man,double elapsed) {
         if (platform->x+platform->w<=lx) continue;
         if (pvy>platform->y) continue;
         if (ny<platform->y) continue;
-        man->y=platform->y-(decalv[DECAL_man].h>>1);
+        man->y=platform->y-(decalv[NS_DECAL_man].h>>1);
         man->seated=1;
         man->gravity=0.0;
         man->platform=platform;
@@ -122,7 +124,7 @@ void man_unjump(struct man *man) {
  */
  
 static void man_begin_mattock(struct man *man) {
-  man->action=DECAL_mattock;
+  man->action=NS_DECAL_mattock;
   egg_play_sound(RID_sound_swipe);
   //TODO break rocks
 }
@@ -141,7 +143,7 @@ static void man_begin_bomb(struct man *man) {
  */
  
 static void man_begin_ax(struct man *man) {
-  man->action=DECAL_ax;
+  man->action=NS_DECAL_ax;
   egg_play_sound(RID_sound_swipe);
   //TODO chop down trees
 }
@@ -150,7 +152,7 @@ static void man_begin_ax(struct man *man) {
  */
  
 static void man_begin_sword(struct man *man) {
-  man->action=DECAL_sword;
+  man->action=NS_DECAL_sword;
   egg_play_sound(RID_sound_swipe);
   //TODO deal damage
 }
@@ -184,7 +186,7 @@ static void man_begin_bow(struct man *man) {
  
 static void man_begin_hourglass(struct man *man) {
   egg_play_sound(RID_sound_hourglass);
-  man->action=DECAL_hourglass;
+  man->action=NS_DECAL_hourglass;
   //TODO freeze time
 }
 
@@ -200,14 +202,14 @@ static void man_begin_magnifier(struct man *man) {
  
 void man_action(struct man *man) {
   switch (man->carry_item) {
-    case DECAL_mattock: man_begin_mattock(man); break;
-    case DECAL_sword: man_begin_sword(man); break;
-    case DECAL_shotgun: man_begin_shotgun(man); break;
-    case DECAL_bomb: man_begin_bomb(man); break;
-    case DECAL_bow: man_begin_bow(man); break;
-    case DECAL_ax: man_begin_ax(man); break;
-    case DECAL_hourglass: man_begin_hourglass(man); break;
-    case DECAL_magnifier: man_begin_magnifier(man); break;
+    case NS_DECAL_mattock: man_begin_mattock(man); break;
+    case NS_DECAL_sword: man_begin_sword(man); break;
+    case NS_DECAL_shotgun: man_begin_shotgun(man); break;
+    case NS_DECAL_bomb: man_begin_bomb(man); break;
+    case NS_DECAL_bow: man_begin_bow(man); break;
+    case NS_DECAL_ax: man_begin_ax(man); break;
+    case NS_DECAL_hourglass: man_begin_hourglass(man); break;
+    case NS_DECAL_magnifier: man_begin_magnifier(man); break;
   }
 }
 
@@ -224,7 +226,7 @@ void man_unaction(struct man *man) {
 void man_render(struct man *man) {
 
   // Get the decal and also some additional constant geometry.
-  const struct decal *decal=decalv+DECAL_man;
+  const struct decal *decal=decalv+NS_DECAL_man;
   const int armw=3; // Does not include the column separating arm from body.
   const int armh=14; // Includes 2 pixels of shoulder.
   const int trunkh=22; // Top to crotch.
@@ -287,9 +289,9 @@ void man_render(struct man *man) {
     if (idecal) {
       // Some items, when in use, acquire a new transform.
       switch (man->action) {
-        case DECAL_mattock: xform|=EGG_XFORM_YREV; dy+=6; break;
-        case DECAL_sword: xform|=EGG_XFORM_YREV; dy+=10; break;
-        case DECAL_ax: if (man->larm) {
+        case NS_DECAL_mattock: xform|=EGG_XFORM_YREV; dy+=6; break;
+        case NS_DECAL_sword: xform|=EGG_XFORM_YREV; dy+=10; break;
+        case NS_DECAL_ax: if (man->larm) {
             xform=EGG_XFORM_SWAP;
             dx-=11;
             dy+=12;

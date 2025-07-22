@@ -21,4 +21,9 @@ void sprite_render(struct sprite *sprite);
 struct sprite *sprite_new_bullet(double x,double y,double dx);
 struct sprite *sprite_new_arrow(double x,double y,double dx);
 
+/* Caller prepares (x,y,decal). We do the rest.
+ * (a,b,c) are the last three bytes of the map command spawning it.
+ */
+int sprite_init_per_map(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c);
+
 #endif

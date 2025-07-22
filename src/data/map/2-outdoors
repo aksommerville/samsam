@@ -1,0 +1,6 @@
+00
+
+width (u16)1500
+hero (u16)1000 (u16)252
+sprite (u16)1000 (u16)253 (u8:DECAL)house 0x000000
+sprite (u16)1000 (u16)253 (u8:DECAL)door map:home 0x00

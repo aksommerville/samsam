@@ -10,6 +10,7 @@
 #include "egg/egg.h"
 #include "opt/stdlib/egg-stdlib.h"
 #include "opt/graf/graf.h"
+#include "opt/rom/rom.h"
 #include "egg_rom_toc.h"
 #include "shared_symbols.h"
 #include "man.h"
@@ -30,6 +31,7 @@ extern struct g {
   int spritec;
   int scrollx;
   double worldw;
+  int indoors;
 } g;
 
 /* Labels are strictly monospaced. Pad with spaces if you like.
@@ -38,5 +40,9 @@ extern struct g {
  * Returns a texture id which the caller must delete.
  */
 int generate_label(const char *src,int srcc);
+
+int load_map(int mapid);
+
+int res_get(void *dstpp,int tid,int rid);
 
 #endif
