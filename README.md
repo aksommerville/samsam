@@ -11,6 +11,9 @@ I am going to modify the graphics in at least two ways:
  - Combine all decals in one image.
  - Shuffle positions such that all decals are reachable.
  - Recolor the shotgun's outline. It's crazy to have two different blacks when there's otherwise just two colors total.
+ - Replace all the off-yellow pixels with colors of my choosing.
+ - One pixel of the Mediterranean was transparent, between Italy and Tunisia. I made it blue.
+ - Ditto one pixel around New Orleans.
  
 rishita wrote on Discord:
 heres the deal: you must use only these provided visual assets. 
@@ -20,3 +23,7 @@ modifications dont drastically change the individual graphics to the point where
 they no longer resemble their original character or composition.
 
 Seems we are well within rights to make those two changes.
+
+Can I allow myself the liberty to change all the off-yellow pixels too?
+rishita certainly implies so.
+Keeping them in the original colors, I just can't, it's so fucking ugly.

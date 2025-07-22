@@ -60,7 +60,7 @@
 #define DECAL_crown 33
 #define DECAL_scroll 34
 #define DECAL_blob 35
-#define DECAL_bug 36
+#define DECAL_candy 36
 #define DECAL_widemouth 37
 #define DECAL_house 38
 #define DECAL_milk 39

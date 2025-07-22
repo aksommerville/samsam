@@ -20,7 +20,12 @@ int egg_client_init() {
   
   g.man.x=FBW>>1;
   g.man.y=FBH>>1;
-  //g.man.carry_item=D_Equipment_bomb;
+  g.man.carry_item=DECAL_milk;
+  
+  g.platformv[g.platformc++]=(struct platform){ 10,100, 81};
+  g.platformv[g.platformc++]=(struct platform){110,140, 61};
+  g.platformv[g.platformc++]=(struct platform){ 50, 80, 81};
+  g.platformv[g.platformc++]=(struct platform){300,100,101};
   
   return 0;
 }
@@ -29,6 +34,10 @@ void egg_client_update(double elapsed) {
 
   int input=egg_input_get_one(0);
   if (input!=g.pvinput) {
+    if ((input&EGG_BTN_SOUTH)&&!(g.pvinput&EGG_BTN_SOUTH)) {//XXX
+      g.dp++;
+      if (g.dp>=DECAL_COUNT) g.dp=0;
+    }
     if ((input&EGG_BTN_SOUTH)&&!(g.pvinput&EGG_BTN_SOUTH)) switch (g.man.larm) {
       case MAN_ARM_DOWN: g.man.larm=MAN_ARM_SIDE; break;
       case MAN_ARM_SIDE: g.man.larm=MAN_ARM_UP; break;
@@ -70,9 +79,18 @@ void egg_client_update(double elapsed) {
 void egg_client_render() {
   g.framec++;
   graf_reset(&g.graf);
-  graf_draw_rect(&g.graf,0,0,FBW,FBH,0xf9f6c7ff);
+  graf_draw_rect(&g.graf,0,0,FBW,FBH,0xa0b0e0ff);
+  
+  struct platform *platform=g.platformv;
+  int i=g.platformc;
+  for (;i-->0;platform++) platform_render(platform);
   
   man_render(&g.man);
+  
+  {//XXX
+    const struct decal *d=decalv+g.dp;
+    graf_draw_decal(&g.graf,g.texid,(FBW>>1)-(d->w>>1),(FBH>>1)-(d->h>>1),d->x,d->y,d->w,d->h,0);
+  }
   
   graf_flush(&g.graf);
 }
