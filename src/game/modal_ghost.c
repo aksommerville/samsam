@@ -91,7 +91,7 @@ static void _ghost_render(struct modal *modal) {
   graf_draw_decal(&g.graf,g.texid,(FBW>>1)-(bpk->w>>1),TOP_MARGIN,bpk->x,bpk->y,bpk->w,bpk->h,0);
   const struct decal *coin=decalv+NS_DECAL_cent;
   graf_draw_decal(&g.graf,g.texid,300,20,coin->x,coin->y,coin->w,coin->h,0);
-  graf_draw_decal(&g.graf,MODAL->coinq_texid,310,21,0,0,MODAL->coinq_w,MODAL->coinq_h,0);
+  graf_draw_decal(&g.graf,MODAL->coinq_texid,310,20,0,0,MODAL->coinq_w,MODAL->coinq_h,0);
 
   const struct merch *merch=MODAL->merchv;
   int i=MODAL->merchc;

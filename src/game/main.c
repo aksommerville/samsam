@@ -21,6 +21,7 @@ int egg_client_init() {
   srand_auto();
   egg_texture_load_image(g.texid=egg_texture_new(),RID_image_graphics);
   
+  hiscore_load();
   if (reset_session()<0) return -1;
   
   return 0;
@@ -94,10 +95,15 @@ void egg_client_update(double elapsed) {
   
   // Game over?
   if ((g.sky.day>=3)&&(g.sky.sunlevel>=1.0)&&(g.sky.daytime>=2.0)) {
+    int newhi=0;
+    if (g.score>g.hi_score) { g.hi_score=g.score; newhi=g.new_hi_score=1; }
+    if (g.playclock<g.hi_time) { g.hi_time=g.playclock; newhi=1; }
+    if (newhi) hiscore_save();
     if (!(g.modal=modal_new_gameover())) egg_terminate(1);
     return;
   }
   
+  g.playclock+=elapsed;
   sky_update(&g.sky,elapsed);
   
   /* Move the hero ourselves, then call out for animation, gravity, jumping, etc.
@@ -175,6 +181,20 @@ static void render_game() {
   for (i=g.spritec;i-->0;sprite++) sprite_render(sprite);
   
   man_render(&g.man);
+  
+  // Stats. Maybe just the coin count?
+  {
+    const struct decal *decal=decalv+NS_DECAL_cent;
+    graf_draw_decal(&g.graf,g.texid,2,2,decal->x,decal->y,decal->w,decal->h,0);
+    char str[3];
+    int strc=0;
+    if (g.coinc>=100) str[strc++]='0'+(g.coinc/100)%10;
+    if (g.coinc>=10) str[strc++]='0'+(g.coinc/10)%10;
+    str[strc++]='0'+g.coinc%10;
+    // This sucks. Our font is 5 pixels high, and I don't want to go lower, but the coin image has 4-pixel text.
+    // So y==2 or y==3. They both look bad, but I think 2 is less bad.
+    quickie_render_string(3+decal->w,2,str,strc);
+  }
 }
 
 /* Render.
@@ -222,4 +242,48 @@ int flag_set(int flagid,int v) {
 void begin_modal_ghost() {
   if (g.modal) modal_del(g.modal);
   g.modal=modal_new_ghost();
+}
+
+/* High score.
+ * Strictly: "PPP,MM:SS.mmm"
+ */
+ 
+static int hiscore_valid(const char *src,int srcc) {
+  if (srcc!=13) return 0;
+  if ((src[0]<'0')||(src[0]>'9')) return 0;
+  if ((src[1]<'0')||(src[1]>'9')) return 0;
+  if ((src[2]<'0')||(src[2]>'9')) return 0;
+  if (src[3]!=',') return 0;
+  if ((src[4]<'0')||(src[4]>'9')) return 0;
+  if ((src[5]<'0')||(src[5]>'9')) return 0;
+  if (src[6]!=':') return 0;
+  if ((src[7]<'0')||(src[7]>'9')) return 0;
+  if ((src[8]<'0')||(src[8]>'9')) return 0;
+  if (src[9]!='.') return 0;
+  if ((src[10]<'0')||(src[10]>'9')) return 0;
+  if ((src[11]<'0')||(src[11]>'9')) return 0;
+  if ((src[12]<'0')||(src[12]>'9')) return 0;
+  return 1;
+}
+ 
+void hiscore_load() {
+  char src[13];
+  int srcc=egg_store_get(src,sizeof(src),"hiscore",7);
+  if (hiscore_valid(src,srcc)) {
+    g.hi_score=(src[0]-'0')*100+(src[1]-'0')*10+(src[2]-'0');
+    g.hi_time=time_eval(src+4,srcc-4);
+  } else {
+    g.hi_score=0;
+    g.hi_time=99.0*60.0+99.999;
+  }
+}
+
+void hiscore_save() {
+  char text[13];
+  text[0]='0'+(g.hi_score/100)%10;
+  text[1]='0'+(g.hi_score/10)%10;
+  text[2]='0'+g.hi_score%10;
+  text[3]=',';
+  time_repr(text+4,9,g.hi_time);
+  egg_store_set("hiscore",7,text,sizeof(text));
 }

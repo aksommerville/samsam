@@ -145,16 +145,16 @@ struct modal *modal_new_gameover() {
   APPEND_DECIMAL(g.score)
   APPEND_LITERAL("\n")
   APPEND_LITERAL("Time: ")
-  APPEND_LITERAL("(TODO)")//TODO report play time
+  rptc+=time_repr(rpt+rptc,sizeof(rpt)-rptc,g.playclock);
   APPEND_LITERAL("\n")
   APPEND_LITERAL("High: ")
-  APPEND_DECIMAL(999)//TODO
+  APPEND_DECIMAL(g.hi_score)
   APPEND_LITERAL(" / ")
-  APPEND_LITERAL("00:00.000")
+  rptc+=time_repr(rpt+rptc,sizeof(rpt)-rptc,g.hi_time);
   APPEND_LITERAL("\n")
   if (g.score>=MAXIMUM_SCORE) {
     APPEND_LITERAL("Perfect score!!!\n")
-  } else if (0) { //TODO high score
+  } else if (g.new_hi_score) {
     APPEND_LITERAL("New high score!!!\n")
   } else {
     APPEND_LITERAL("Can you reach ")

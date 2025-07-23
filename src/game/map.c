@@ -106,6 +106,8 @@ int reset_session() {
   g.coinc=0;
   g.score=0;
   g.day=0;
+  g.playclock=0.0;
+  g.new_hi_score=0;
   memset(g.item_by_day,0,sizeof(g.item_by_day));
   sky_reset(&g.sky);
   egg_play_song(RID_song_sideshow,0,1);

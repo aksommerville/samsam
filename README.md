@@ -48,9 +48,9 @@ Um. It's not going to be all that engaging of a game.
 - [x] Game over modal.
 - [ ] Music: Make sideshow longer, and need something for gameover.
 - [ ] Sound effects.
-- [ ] Show coins in main view.
-- [ ] Play clock.
-- [ ] Persist high score.
+- [x] Show coins in main view.
+- [x] Play clock.
+- [x] Persist high score.
 - [ ] Coins and proper shop pricing.
 - [ ] I think I do need a visual map editor for fine-tuning the layouts. Is that feasible?
 - [ ] Ensure that we are in fact using every decal. I'm not sure that was a requirement, but it ought to be.
