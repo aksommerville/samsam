@@ -3,6 +3,7 @@
  */
  
 import { GraphicsSlicer } from "./GraphicsSlicer.js";
+import { SamsMapEditor } from "./SamsMapEditor.js";
  
 export class Custom {
   static getDependencies() {
@@ -39,7 +40,9 @@ export class Custom {
    * Doing a more involved format check is of course possible but kind of pointless, that's what type is for.
    */
   getEditors() {
-    return [];
+    return [
+      SamsMapEditor,
+    ];
   }
   
   /* To get custom point commands appearing in MapEditor instead of the "?" tile,

@@ -40,7 +40,7 @@ Um. It's not going to be all that engaging of a game.
 - [x] Ghost should only sell each item once.
 - [x] Sound effects.
 - [ ] Coins and proper shop pricing.
-- [ ] I think I do need a visual map editor for fine-tuning the layouts. Is that feasible?
+- [x] I think I do need a visual map editor for fine-tuning the layouts. Is that feasible?
 - [ ] It's possible to get trapped if you arrow-platform a tree but not the back side, then give away the bow. Design around it.
 - [ ] Ensure that we are in fact using every decal. I'm not sure that was a requirement, but it ought to be.
 - - Still need used: foot tower workstation flowerpot ivy weed weed2

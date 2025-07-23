@@ -1,0 +1,53 @@
+.SamsMapEditor {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.SamsMapEditor .scroller {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  width: calc(100vw - 300px);
+  height: 520px;
+}
+
+.SamsMapEditor canvas.visual {
+  height: 504px;
+  image-rendering: pixelated;
+}
+
+.SamsMapEditor .bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+  flex: 1;
+}
+
+.SamsMapEditor .commandList {
+  overflow-y: scroll;
+  min-width: 300px;
+}
+
+.SamsMapEditor .commandButton {
+  cursor: pointer;
+  user-select: none;
+}
+.SamsMapEditor .commandButton.highlight {
+  background-color: #00f;
+}
+
+.SamsMapEditor .details {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+}
+
+.SamsMapEditor .details table {
+  flex: 1;
+}
+
+.SamsMapEditor .details table input[type="text"] {
+  width: 100%;
+}
