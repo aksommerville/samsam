@@ -12,6 +12,7 @@ Modifications to the shared graphics:
  - - Two pixels of the globe were transparent, seemingly by accident. I filled those in.
  - - The shotgun's outline was pure black. I made it #0e0e0e like the others.
  - Added a 3x5 G0 font in the Pacific Ocean, nominally obeying my rules, but definitely violating the spirit of them.
+ - Colored the dollar bill to look like a brick, because bricks are much more useful.
  - The intent of a few shapes was unclear so I took liberties and one can assume these were not the intended shapes:
  - - Sitting dog.
  - - Candy bar.
@@ -36,41 +37,12 @@ Um. It's not going to be all that engaging of a game.
 
 ## TODO
 
-- [x] Gravity, jumping, and platform respect.
-- [x] Load scene from maps. Do use "map" resources, but disregard their grid data, use the command list only.
-- [x] Door.
-- [x] Coins to collect.
-- [x] Peddlar sprite.
-- [x] Peddlar modal.
-- [x] Cheeseburger.
-- [x] Setting and rising sun, moon, and cookie. Modify sky color on changes.
-- [x] End of game.
-- [x] Game over modal.
-- [ ] Music: Make sideshow longer, and need something for gameover.
+- [x] Ghost should only sell each item once.
 - [ ] Sound effects.
-- [x] Show coins in main view.
-- [x] Play clock.
-- [x] Persist high score.
-- [x] Arrow platforms.
 - [ ] Coins and proper shop pricing.
 - [ ] I think I do need a visual map editor for fine-tuning the layouts. Is that feasible?
 - [ ] It's possible to get trapped if you arrow-platform a tree but not the back side, then give away the bow. Design around it.
 - [ ] Ensure that we are in fact using every decal. I'm not sure that was a requirement, but it ought to be.
 - - Still need used: foot tower workstation flowerpot ivy weed weed2
-- [x] Decorative basketball dribbling.
-- [x] New color for text background.
-- [ ] Ghost should only sell each item once.
+- [ ] Music: Make sideshow longer, and need something for gameover.
 - [ ] Itch page.
-
-Which souvenirs can do something beyond trading?
- - Mattock: Break stones, obviously, but I don't think we have any stones.
- - Shield: Block projectiles... Can we have projectiles?
- - Sword: Kill the peddlar or the burger.
- - Shotgun: Kill the peddlar or the burger.
- - Bomb: See Mattock.
- - Bow: Fire arrows. Oooh! Can we have the arrows turn into platforms when they hit a tree, a la Artemis?
- - Ax: Chop down trees.
- - Umbrella: Reduce terminal velocity.
- - Hourglass: Freeze time. Like the Shield, maybe useful if there are projectiles.
- - Magnifier: Decorative text like "no clues here"
- - Crown: Wear it instead of carrying it? Er no, you carry it, but the burger will wear it.

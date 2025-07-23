@@ -10,6 +10,7 @@ struct modal_ghost {
   struct merch {
     const struct decal *decal;
     int dstx,dsty;
+    int sold;
   } merchv[MERCH_LIMIT];
   int merchc;
   int merchp;
@@ -31,13 +32,16 @@ static void _ghost_del(struct modal *modal) {
 static void ghost_activate(struct modal *modal) {
   if ((MODAL->merchp<0)||(MODAL->merchp>=MODAL->merchc)) return;
   const struct merch *merch=MODAL->merchv+MODAL->merchp;
-  if (merch->decal->price>g.coinc) {
+  if (merch->sold) {
+    egg_play_sound(RID_sound_reject);
+  } else if (merch->decal->price>g.coinc) {
     egg_play_sound(RID_sound_reject);
   } else if (merch->decal->price>0) {
     egg_play_sound(RID_sound_purchase);
     g.coinc-=merch->decal->price;
     g.man.larm=MAN_ARM_SIDE;
     g.man.carry_item=merch->decal-decalv;
+    g.soldv[merch->decal-decalv]=1;
     modal->defunct=1;
   } else {
     egg_play_sound(RID_sound_uiaction);
@@ -96,6 +100,7 @@ static void _ghost_render(struct modal *modal) {
   const struct merch *merch=MODAL->merchv;
   int i=MODAL->merchc;
   for (;i-->0;merch++) {
+    if (merch->sold) graf_set_alpha(&g.graf,0x40);
     graf_draw_decal(&g.graf,g.texid,merch->dstx,merch->dsty,merch->decal->x,merch->decal->y,merch->decal->w,merch->decal->h,0);
     if (merch->decal->price>0) {
       int dsty=merch->dsty+merch->decal->h+2;
@@ -106,6 +111,7 @@ static void _ghost_render(struct modal *modal) {
         graf_draw_decal(&g.graf,g.texid,dstx,dsty,coin->x,coin->y,coin->w,coin->h,0);
       }
     }
+    if (merch->sold) graf_set_alpha(&g.graf,0xff);
   }
   if ((MODAL->merchp>=0)&&(MODAL->merchp<MODAL->merchc)&&(g.framec%40<35)) {
     merch=MODAL->merchv+MODAL->merchp;
@@ -135,13 +141,14 @@ struct modal *modal_new_ghost() {
   MODAL->coinq_texid=generate_label(coinq,coinqc);
   egg_texture_get_status(&MODAL->coinq_w,&MODAL->coinq_h,MODAL->coinq_texid);
   
+  // Populate the merch.
   int top=TOP_MARGIN+decalv[NS_DECAL_backpack].h;
   int colw=FBW/MERCH_COLC;
   int rowh=(FBH-top)/MERCH_ROWC;
   int col=0,row=0;
   const struct decal *decal=decalv;
-  int i=DECAL_COUNT;
-  for (;i-->0;decal++) {
+  int i=0;
+  for (;i<DECAL_COUNT;i++,decal++) {
     if (!decal->price) continue;
     if (MODAL->merchc>=MERCH_LIMIT) {
       fprintf(stderr,"Too many salable items\n");
@@ -150,6 +157,7 @@ struct modal *modal_new_ghost() {
     }
     struct merch *merch=MODAL->merchv+MODAL->merchc++;
     merch->decal=decal;
+    merch->sold=g.soldv[i];
     int bx=col*colw,by=top+row*rowh;
     merch->dstx=bx+(colw>>1)-(decal->w>>1);
     merch->dsty=by+(rowh>>1)-(decal->h>>1);

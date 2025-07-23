@@ -41,6 +41,7 @@ extern struct g {
   int score; // Sum of prices of items delivered to burger.
   int day; // 0,1,2,3. Game ends when it strikes 3. Burger increments in on accepting an offering.
   int item_by_day[3];
+  uint8_t soldv[DECAL_COUNT];
   double playclock;
   struct modal *modal;
   struct sky sky;
