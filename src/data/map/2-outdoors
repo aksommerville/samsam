@@ -8,7 +8,7 @@ platform (u16)1300 (u16)100 (u16)180 (u8:platform)bar 0x00
 sprite (u16)1320 (u16)100 (u8:DECAL)pottedplant 0x000000
 sprite (u16)1460 (u16)100 (u8:DECAL)pottedplant 0x000000
 sprite (u16)1390 (u16)100 (u8:DECAL)burger 0x000000
-sprite (u16)1420 (u16)253 (u8:DECAL)ghost 0x000000
+sprite (u16)1376 (u16)253 (u8:DECAL)ghost 0x000000
 sprite (u16)1000 (u16)253 (u8:DECAL)house 0x000000
 sprite (u16)1000 (u16)253 (u8:DECAL)door map:home 0x00
 sprite (u16)700 (u16)192 (u8:DECAL)pine (u8:flag)tree1 0x0000
@@ -34,3 +34,6 @@ sprite (u16)832 (u16)252 (u8:DECAL)pine (u8:flag)tree3 0x0000
 sprite (u16)451 (u16)200 (u8:DECAL)weed 0x00 0x0000
 sprite (u16)567 (u16)203 (u8:DECAL)weed2 0x00 0x0000
 sprite (u16)1220 (u16)100 (u8:DECAL)cent (u8:flag)coin010 0x0000
+platform (u16)1454 (u16)238 (u16)22 (u8:platform)table 0x00
+sprite (u16)1463 (u16)248 (u8:DECAL)workstation 0x00 0x0000
+sprite (u16)1436 (u16)253 (u8:DECAL)tower 0x00 0x0000

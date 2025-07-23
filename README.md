@@ -46,7 +46,6 @@ It's possible to complete in under 30 seconds, or under 60 seconds with a perfec
 - [x] Coins and proper shop pricing.
 - [x] I think I do need a visual map editor for fine-tuning the layouts. Is that feasible?
 - [x] It's possible to get trapped if you arrow-platform a tree but not the back side, then give away the bow. Design around it.
-- [ ] Ensure that we are in fact using every decal. I'm not sure that was a requirement, but it ought to be.
-- - Still need used: tower workstation
+- [x] Ensure that we are in fact using every decal. I'm not sure that was a requirement, but it ought to be.
 - [ ] Music: Make sideshow longer, and need something for gameover.
 - [ ] Itch page.
