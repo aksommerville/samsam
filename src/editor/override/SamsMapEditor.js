@@ -7,7 +7,7 @@
  
 import { Dom } from "../js/Dom.js";
 import { Data } from "../js/Data.js";
-import { MapRes } from "../js/map/MapRes.js";
+import { MapRes, MapCommand } from "../js/map/MapRes.js";
 import { Namespaces } from "../js/Namespaces.js";
  
 export class SamsMapEditor {
@@ -26,6 +26,7 @@ export class SamsMapEditor {
     this.renderTimeout = null;
     this.graphics = null;
     this.selectedMapCommandId = 0;
+    this.restoreScroll = 0;
     
     this.data.getImageAsync("graphics").then(img => this.graphics = img);
   }
@@ -67,6 +68,7 @@ export class SamsMapEditor {
       if (command.mapCommandId === this.selectedMapCommandId) button.classList.add("highlight");
     }
     const details = this.dom.spawn(bottom, "DIV", ["details"]);
+    if (this.selectedMapCommandId) this.populateDetails();
     
     this.renderSoon();
   }
@@ -197,6 +199,18 @@ export class SamsMapEditor {
     const scale = 2;
     const x = (event.x - bounds.x + scroll) / scale;
     const y = (event.y - bounds.y) / scale;
+    
+    // With Control, add a command. Use cent because it has to be something, and I expect to add lots of these.
+    if (event.ctrlKey) {
+      const cmd = new MapCommand(`sprite (u16)${~~x} (u16)${~~y} (u8:DECAL)cent (u8:flag)coin000 0x0000`);
+      this.map.commands.push(cmd);
+      this.selectedMapCommandId = cmd.mapCommandId;
+      this.restoreScroll = this.element.querySelector(".scroller").scrollLeft;
+      this.buildUi();
+      this.data.dirty(this.res.path, () => this.map.encode());
+      return;
+    }
+    
     // Iterate commands backward to the first match -- ones overlaying others visually take precedence.
     let mapCommandId = 0;
     for (let i=this.map.commands.length; i-->0; ) {
@@ -275,6 +289,12 @@ export class SamsMapEditor {
         case "platform": this.renderPlatform(canvas, ctx, command); break;
         case "sprite": this.renderSprite(canvas, ctx, command); break;
       }
+    }
+    if (this.restoreScroll) {
+      this.window.setTimeout(() => {
+        this.element.querySelector(".scroller").scrollTo(this.restoreScroll, 0);
+        this.restoreScroll = 0;
+      }, 0);
     }
   }
   

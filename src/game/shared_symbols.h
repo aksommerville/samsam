@@ -43,6 +43,17 @@
 #define NS_flag_coin008 11
 #define NS_flag_coin009 12
 #define NS_flag_coin010 13
+#define NS_flag_coin011 14
+#define NS_flag_coin012 15
+#define NS_flag_coin013 16
+#define NS_flag_coin014 17
+#define NS_flag_coin015 18
+#define NS_flag_coin016 19
+#define NS_flag_coin017 20
+#define NS_flag_coin018 21
+#define NS_flag_coin019 22
+#define NS_flag_coin020 23
+#define NS_flag_coin021 24
 
 // All the individual decals provided. These are the only graphics I will use.
 // Note that decal zero is empty and unused: I want nonzero IDs for the valid ones.
