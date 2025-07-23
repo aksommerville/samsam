@@ -238,6 +238,7 @@ void man_action(struct man *man) {
     case NS_DECAL_ax: man_begin_ax(man); break;
     case NS_DECAL_hourglass: man_begin_hourglass(man); break;
     case NS_DECAL_magnifier: man_begin_magnifier(man); break;
+    default: egg_play_sound(RID_sound_reject); break; // Important to do something, so the player knows she's pressing a live button.
   }
 }
 

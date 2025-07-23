@@ -19,6 +19,8 @@
 #include "modal.h"
 #include "sky.h"
 
+#define MAXIMUM_SCORE 999 /*TODO*/
+
 extern struct g {
   void *rom;
   int romc;
@@ -38,6 +40,7 @@ extern struct g {
   int coinc;
   int score; // Sum of prices of items delivered to burger.
   int day; // 0,1,2,3. Game ends when it strikes 3. Burger increments in on accepting an offering.
+  int item_by_day[3];
   struct modal *modal;
   struct sky sky;
 } g;

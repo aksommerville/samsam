@@ -5,6 +5,7 @@
 
 int generate_label(const char *src,int srcc) {
   if (!src) srcc=0; else if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
+  if (srcc&&(src[srcc-1]==0x0a)) srcc--; // Trim one LF from the end if present -- assume they didn't want a blank line below.
   const int srcx=8,srcy=312;
   const int colw=3,rowh=5;
   const int xspacing=colw+1;
@@ -29,7 +30,7 @@ int generate_label(const char *src,int srcc) {
   // Then if there's no glyphs, we're done.
   int texid=egg_texture_new();
   egg_texture_load_raw(texid,fullw,fullh,fullw<<2,0,0);
-  egg_draw_clear(texid,0x4c2f0dff);
+  egg_draw_clear(texid,0x390a20ff);
   if (!vtxc) return texid;
   
   // Prepare a vertex buffer.

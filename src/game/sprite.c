@@ -129,6 +129,7 @@ static int sprite_pine_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t c)
  * fv[4]: animclock
  * iv[0]: animframe(0,1)
  * iv[1]: appeased
+ * iv[2]: game-over mode (c==1)
  */
  
 #define BURGER_SUMMON_SPEED 30.0
@@ -177,8 +178,13 @@ static int sprite_burger_is_summoned(const struct sprite *sprite) {
 
 static void sprite_burger_update(struct sprite *sprite,double elapsed) {
 
+  // Special game-over mode: Fly away up and to the right.
+  if (sprite->iv[2]) {
+    sprite->x+=50.0*elapsed;
+    sprite->y-=15.0*elapsed;
+
   // Approach the hero if summoned.
-  if (sprite_burger_is_summoned(sprite)) {
+  } else if (sprite_burger_is_summoned(sprite)) {
     double dstx=g.man.x;
     if (g.man.larm) dstx-=20.0; else dstx+=20.0;
     if (sprite->x<dstx-1.0) {
@@ -201,6 +207,7 @@ static void sprite_burger_update(struct sprite *sprite,double elapsed) {
         case NS_DECAL_crown: flag_set(NS_flag_burgerking,1); break;
       }
       g.score+=decalv[g.man.carry_item].price;
+      if ((g.day>=0)&&(g.day<3)) g.item_by_day[g.day]=g.man.carry_item;
       g.day++;
       g.man.larm=g.man.rarm=MAN_ARM_DOWN;
       g.man.carry_item=0;
@@ -244,7 +251,12 @@ static int sprite_burger_init(struct sprite *sprite,uint8_t a,uint8_t b,uint8_t 
   sprite->update=sprite_burger_update_1;
   sprite->fv[1]=0.0;
   sprite->fv[3]=sprite->y;
-  sprite->y=-20.0;
+  if (c==1) {
+    sprite->update=sprite_burger_update;
+    sprite->iv[2]=1;
+  } else {
+    sprite->y=-20.0;
+  }
   return 0;
 }
 
