@@ -11,6 +11,8 @@
 struct platform {
   int x,y,w; // Position and size in world pixels. (y) is my top edge, the business edge.
   int style; // NS_platform_
+  uint8_t xform;
+  int above; // Nonzero to render after sprites.
 };
 
 void platform_render(struct platform *platform);

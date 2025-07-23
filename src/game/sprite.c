@@ -54,12 +54,76 @@ struct sprite *sprite_new_bullet(double x,double y,double dx) {
 
 /* Arrow.
  */
+
+// (tree) is optional. If omitted, we're attaching to an indoor wall.
+// (side) is -1 for left edge of tree or 1 for right edge of tree. (ie opposite the direction the arrow is facing).
+static void create_arrow_platform(struct sprite *tree,double y,int side) {
+  struct platform *platform=0;
+  if (g.platformc<PLATFORM_LIMIT) {
+    platform=g.platformv+g.platformc++;
+  } else {
+    // Evict the lowest-address arrow. If there isn't one, abort.
+    struct platform *q=g.platformv;
+    int i=0;
+    for (;i<g.platformc;i++,q++) {
+      if (q->style!=NS_platform_arrow) continue;
+      platform=q;
+      break;
+    }
+    if (!platform) return;
+  }
+  platform->style=NS_platform_arrow;
+  platform->above=1;
+  platform->y=(int)y-2;
+  platform->w=decalv[NS_DECAL_arrow].h;
+  platform->xform=(side<0)?EGG_XFORM_SWAP:(EGG_XFORM_SWAP|EGG_XFORM_YREV);
+  if (tree) {
+    if (side<0) platform->x=(int)tree->x-platform->w;
+    else platform->x=(int)tree->x;
+  } else {
+    if (side<0) platform->x=FBW-18-platform->w;
+    else platform->x=18;
+  }
+}
  
 static void sprite_arrow_update(struct sprite *sprite,double elapsed) {
   sprite->x+=elapsed*sprite->fv[0];
-  if ((sprite->x<-10.0)||(sprite->x>g.worldw+10.0)) sprite->defunct=1;
-  //TODO damage
-  //TODO turn into a platform
+  if ((sprite->x<-10.0)||(sprite->x>g.worldw+10.0)) {
+    sprite->defunct=1;
+    return;
+  }
+  
+  // Can we attach to a tree?
+  double xlo=sprite->x-5.0;
+  double xhi=sprite->x+5.0;
+  double ylo=sprite->y-22.0;
+  double yhi=sprite->y+22.0;
+  struct sprite *tree=g.spritev;
+  int i=g.spritec;
+  for (;i-->0;tree++) {
+    if (tree->defunct) continue;
+    if (tree->decal!=decalv+NS_DECAL_pine) continue;
+    if (tree->x<xlo) continue;
+    if (tree->x>xhi) continue;
+    if (tree->y<ylo) continue;
+    if (tree->y>yhi) continue;
+    create_arrow_platform(tree,sprite->y,(sprite->fv[0]<0.0)?1:-1);
+    sprite->defunct=1;
+    return;
+  }
+  
+  // Can we attach to an interior wall?
+  if (g.indoors) {
+    if ((sprite->x<24.0)&&(sprite->fv[0]<0.0)) {
+      create_arrow_platform(0,sprite->y,1);
+      sprite->defunct=1;
+      return;
+    } else if (sprite->x>FBW-24.0) {
+      create_arrow_platform(0,sprite->y,-1);
+      sprite->defunct=1;
+      return;
+    }
+  }
 }
  
 struct sprite *sprite_new_arrow(double x,double y,double dx) {
@@ -162,6 +226,10 @@ static void sprite_burger_render(struct sprite *sprite) {
     graf_draw_decal(&g.graf,g.texid,midx-(crown->w>>1),midy-crown->h-3,crown->x,crown->y,crown->w,crown->h,0);
   }
   graf_draw_decal(&g.graf,g.texid,midx+ndx-(d_wing->w>>1),midy+ndy-4-(d_wing->h>>1),d_wing->x,d_wing->y,d_wing->w,d_wing->h,nxform);
+  if (sprite->iv[1]) { // appeased; add a heart
+    const struct decal *h=decalv+NS_DECAL_heart;
+    graf_draw_decal(&g.graf,g.texid,midx-(h->w>>1),midy-h->h-8,h->x,h->y,h->w,h->h,0);
+  }
 }
 
 static int sprite_burger_is_summoned(const struct sprite *sprite) {

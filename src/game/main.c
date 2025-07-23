@@ -172,13 +172,24 @@ static void render_game() {
     sky_render(&g.sky);
   }
   
+  // Draw platforms, and note whether there's any "above" ones.
   struct platform *platform=g.platformv;
-  int i=g.platformc;
-  for (;i-->0;platform++) platform_render(platform);
+  int i=g.platformc,platforms_again=0;
+  for (;i-->0;platform++) {
+    if (platform->above) platforms_again=1;
+    else platform_render(platform);
+  }
   
   // Sprites can't be defunct at this point, render them all.
   struct sprite *sprite=g.spritev;
   for (i=g.spritec;i-->0;sprite++) sprite_render(sprite);
+  
+  // If we have any "above" platforms, render them now, after the sprites.
+  if (platforms_again) {
+    for (platform=g.platformv,i=g.platformc;i-->0;platform++) {
+      if (platform->above) platform_render(platform);
+    }
+  }
   
   man_render(&g.man);
   

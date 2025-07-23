@@ -24,7 +24,7 @@ static void platform_render_bar(struct platform *platform) {
 static void platform_render_decal(struct platform *platform,const struct decal *decal,int dx,int dy) {
   int dstx=platform->x-g.scrollx+dx;
   int dsty=platform->y+dy;
-  graf_draw_decal(&g.graf,g.texid,dstx,dsty,decal->x,decal->y,decal->w,decal->h,0);
+  graf_draw_decal(&g.graf,g.texid,dstx,dsty,decal->x,decal->y,decal->w,decal->h,platform->xform);
 }
 
 /* Render, dispatch.
@@ -33,7 +33,7 @@ static void platform_render_decal(struct platform *platform,const struct decal *
 void platform_render(struct platform *platform) {
   switch (platform->style) {
     case NS_platform_bar: platform_render_bar(platform); break;
-    case NS_platform_arrow: platform_render_decal(platform,decalv+NS_DECAL_arrow,0,0); break;//XXX will require xform too
+    case NS_platform_arrow: platform_render_decal(platform,decalv+NS_DECAL_arrow,0,0); break;
     case NS_platform_bed: platform_render_decal(platform,decalv+NS_DECAL_bed,0,-4); break;
     case NS_platform_table: platform_render_decal(platform,decalv+NS_DECAL_table,0,0); break;
     case NS_platform_chair: platform_render_decal(platform,decalv+NS_DECAL_chair,0,-10); break;
