@@ -54,7 +54,7 @@ Um. It's not going to be all that engaging of a game.
 - [ ] Coins and proper shop pricing.
 - [ ] I think I do need a visual map editor for fine-tuning the layouts. Is that feasible?
 - [ ] Ensure that we are in fact using every decal. I'm not sure that was a requirement, but it ought to be.
-- [ ] Decorative basketball dribbling.
+- [x] Decorative basketball dribbling.
 - [x] New color for text background.
 - [ ] Ghost should only sell each item once.
 - [ ] Itch page.

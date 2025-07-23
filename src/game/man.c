@@ -6,11 +6,23 @@
 #define MAN_TERMINAL_VELOCITY_UMBRELLA 60.0 /* px/s */
 #define MAN_JUMP_POWER_INITIAL 300.0 /* px/s */
 #define MAN_JUMP_POWER_DECEL 700.0 /* px/s**2 */
+#define DRIBBLE_SPEED 3.000 /* hz */
 
 /* Update animation.
  */
  
 void man_update(struct man *man,double elapsed) {
+
+  // Basketball.
+  if (man->dribble>0.0) {
+    double pv=man->dribble;
+    man->dribble+=elapsed*DRIBBLE_SPEED;
+    if (man->dribble>=1.0) {
+      man->dribble=0.0;
+    } else if ((man->dribble>=0.5)&&(pv<0.5)) {
+      egg_play_sound(RID_sound_basketball);
+    }
+  }
 
   // Legs do a complex dance if walking.
   if (man->walking) {
@@ -225,6 +237,15 @@ static void man_begin_magnifier(struct man *man) {
   //TODO clues
 }
 
+/* Basketball: Decorative dribbling.
+ */
+ 
+static void man_begin_basketball(struct man *man) {
+  if (man->dribble>0.0) return;
+  if (!man->seated) return;
+  man->dribble=0.001;
+}
+
 /* Trigger action.
  */
  
@@ -238,13 +259,13 @@ void man_action(struct man *man) {
     case NS_DECAL_ax: man_begin_ax(man); break;
     case NS_DECAL_hourglass: man_begin_hourglass(man); break;
     case NS_DECAL_magnifier: man_begin_magnifier(man); break;
+    case NS_DECAL_basketball: man_begin_basketball(man); break;
     default: egg_play_sound(RID_sound_reject); break; // Important to do something, so the player knows she's pressing a live button.
   }
 }
 
 void man_unaction(struct man *man) {
   switch (man->action) {
-    //TODO
   }
   man->action=0;
 }
@@ -329,6 +350,11 @@ void man_render(struct man *man) {
             dx-=4;
             dy+=12;
           } break;
+      }
+      if ((man->carry_item==NS_DECAL_basketball)&&(man->dribble>0.0)) {
+        double travelh=20.0;
+        if (man->dribble>=0.5) dy+=(int)((1.0-man->dribble)*travelh*2.0);
+        else dy+=(int)(man->dribble*travelh*2.0);
       }
       graf_draw_decal(&g.graf,g.texid,ix-(idecal->w>>1)+dx,iy-(idecal->h>>1)+dy,idecal->x,idecal->y,idecal->w,idecal->h,xform);
     }

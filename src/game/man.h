@@ -24,6 +24,7 @@ struct man {
   double jumppower;
   int jumping; // Don't touch; use man_jump() and man_unjump().
   int action; // Decal ID if in progress.
+  double dribble; // Silly decorative animation, dribbling the basketball. 0..1, hits the floor at 1/2.
 };
 
 void man_update(struct man *man,double elapsed);
