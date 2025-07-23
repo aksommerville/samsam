@@ -19,5 +19,6 @@ void modal_update(struct modal *modal,double elapsed);
 void modal_render(struct modal *modal);
 
 struct modal *modal_new_ghost();
+struct modal *modal_new_gameover();
 
 #endif

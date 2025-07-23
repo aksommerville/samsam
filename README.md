@@ -43,13 +43,15 @@ Um. It's not going to be all that engaging of a game.
 - [x] Peddlar sprite.
 - [x] Peddlar modal.
 - [x] Cheeseburger.
-- [ ] Setting and rising sun, moon, and cookie. Modify sky color on changes.
-- [ ] End of game.
+- [x] Setting and rising sun, moon, and cookie. Modify sky color on changes.
+- [x] End of game.
 - [ ] Game over modal.
 - [ ] Music.
 - [ ] Sound effects.
 - [ ] Show coins in main view.
 - [ ] Coins and proper shop pricing.
+- [ ] I think I do need a visual map editor for fine-tuning the layouts. Is that feasible?
+- [ ] Ghost should only sell each item once.
 
 Which souvenirs can do something beyond trading?
  - Mattock: Break stones, obviously, but I don't think we have any stones.

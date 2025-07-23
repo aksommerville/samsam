@@ -23,10 +23,6 @@ int egg_client_init() {
   
   if (reset_session()<0) return -1;
   
-  //g.man.rarm=MAN_ARM_SIDE;
-  //g.man.carry_item=NS_DECAL_ax;
-  //flag_set(NS_flag_burgerking,1);//XXX
-  
   return 0;
 }
 
@@ -68,7 +64,6 @@ static void check_doors() {
  */
 
 void egg_client_update(double elapsed) {
-  //TODO modals
 
   /* React to input changes.
    */
@@ -96,6 +91,14 @@ void egg_client_update(double elapsed) {
       return;
     }
   }
+  
+  // Game over?
+  if ((g.sky.day>=3)&&(g.sky.sunlevel>=1.0)&&(g.sky.daytime>=2.0)) {
+    if (!(g.modal=modal_new_gameover())) egg_terminate(1);
+    return;
+  }
+  
+  sky_update(&g.sky,elapsed);
   
   /* Move the hero ourselves, then call out for animation, gravity, jumping, etc.
    */
@@ -160,7 +163,7 @@ static void render_game() {
       graf_draw_decal(&g.graf,g.texid,FBW-decal->w,y,decal->x,decal->y,decal->w,decal->h,0);
     }
   } else {
-    graf_draw_rect(&g.graf,0,0,FBW,FBH,0xa0b0e0ff);//TODO sky
+    sky_render(&g.sky);
   }
   
   struct platform *platform=g.platformv;

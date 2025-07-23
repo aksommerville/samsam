@@ -164,6 +164,9 @@ static void sprite_burger_render(struct sprite *sprite) {
 }
 
 static int sprite_burger_is_summoned(const struct sprite *sprite) {
+  if (g.day>=3) return 0;
+  if (g.day!=g.sky.day) return 0; // Transition in progress.
+  if (g.sky.sunlevel<1.0) return 0; // ''
   if (sprite->iv[1]) return 0;
   if (g.man.x<sprite->fv[0]) return 0;
   if (g.man.x>sprite->fv[2]) return 0;
@@ -198,6 +201,7 @@ static void sprite_burger_update(struct sprite *sprite,double elapsed) {
         case NS_DECAL_crown: flag_set(NS_flag_burgerking,1); break;
       }
       g.score+=decalv[g.man.carry_item].price;
+      g.day++;
       g.man.larm=g.man.rarm=MAN_ARM_DOWN;
       g.man.carry_item=0;
       sprite->iv[1]=1;

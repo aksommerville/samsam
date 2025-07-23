@@ -17,6 +17,7 @@
 #include "platform.h"
 #include "sprite.h"
 #include "modal.h"
+#include "sky.h"
 
 extern struct g {
   void *rom;
@@ -35,8 +36,10 @@ extern struct g {
   int indoors;
   uint8_t flagv[32];
   int coinc;
-  int score;
+  int score; // Sum of prices of items delivered to burger.
+  int day; // 0,1,2,3. Game ends when it strikes 3. Burger increments in on accepting an offering.
   struct modal *modal;
+  struct sky sky;
 } g;
 
 /* Labels are strictly monospaced. Pad with spaces if you like.

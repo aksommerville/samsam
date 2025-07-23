@@ -104,6 +104,9 @@ int reset_session() {
   memset(g.flagv,0,sizeof(g.flagv));
   g.flagv[0]=2; // NS_flag_one must always be one.
   g.coinc=0;
+  g.score=0;
+  g.day=0;
+  sky_reset(&g.sky);
   egg_play_song(RID_song_sideshow,0,1);
   return load_map(RID_map_home);
 }
