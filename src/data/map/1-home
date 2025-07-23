@@ -21,3 +21,6 @@ sprite (u16)40 (u16)200 (u8:DECAL)cent (u8:flag)coin007 0x0000
 sprite (u16)70 (u16)200 (u8:DECAL)cent (u8:flag)coin008 0x0000
 sprite (u16)350 (u16)200 (u8:DECAL)cent (u8:flag)coin009 0x0000
 hero (u16)224 (u16)241
+sprite (u16)381 (u16)227 (u8:DECAL)flowerpot 0x00 0x0000
+sprite (u16)120 (u16)241 (u8:DECAL)ivy 0x00 0x0000
+sprite (u16)224 (u16)15 (u8:DECAL)foot 0x00 0x0000

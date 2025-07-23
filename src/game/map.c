@@ -112,9 +112,5 @@ int reset_session() {
   memset(g.item_by_day,0,sizeof(g.item_by_day));
   sky_reset(&g.sky);
   egg_play_song(RID_song_sideshow,0,1);
-  
-  //XXX cheats, during dev
-  g.coinc=9;
-  
   return load_map(RID_map_home);
 }

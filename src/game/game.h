@@ -19,7 +19,7 @@
 #include "modal.h"
 #include "sky.h"
 
-#define MAXIMUM_SCORE 999 /*TODO*/
+#define MAXIMUM_SCORE 21
 
 extern struct g {
   void *rom;

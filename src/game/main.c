@@ -79,6 +79,7 @@ void egg_client_update(double elapsed) {
       else if (!(input&EGG_BTN_WEST)&&(g.pvinput&EGG_BTN_WEST)) man_unaction(&g.man);
       if ((input&EGG_BTN_UP)&&!(g.pvinput&EGG_BTN_UP)) check_doors();
     }
+    if ((input&EGG_BTN_AUX1)&&!(g.pvinput&EGG_BTN_AUX1)&&!g.modal) reset_session();
     if ((input&EGG_BTN_AUX3)&&!(g.pvinput&EGG_BTN_AUX3)) egg_terminate(0);
     g.pvinput=input;
   }

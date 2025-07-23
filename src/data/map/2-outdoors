@@ -20,7 +20,7 @@ sprite (u16)854 (u16)187 (u8:DECAL)cent (u8:flag)coin012 0x0000
 sprite (u16)812 (u16)182 (u8:DECAL)cent (u8:flag)coin013 0x0000
 sprite (u16)775 (u16)201 (u8:DECAL)cent (u8:flag)coin014 0x0000
 platform (u16)419 (u16)200 (u16)200 (u8:platform)bar 0x00
-platform (u16)225 (u16)155 (u16)80 (u8:platform)bar 0x00
+platform (u16)225 (u16)155 (u16)100 (u8:platform)bar 0x00
 sprite (u16)169 (u16)111 (u8:DECAL)cent (u8:flag)coin017 0x0000
 sprite (u16)124 (u16)107 (u8:DECAL)cent (u8:flag)coin016 0x0000
 sprite (u16)72 (u16)111 (u8:DECAL)cent (u8:flag)coin015 0x0000
@@ -28,3 +28,9 @@ sprite (u16)146 (u16)231 (u8:DECAL)cent (u8:flag)coin018 0x0000
 sprite (u16)205 (u16)225 (u8:DECAL)cent (u8:flag)coin019 0x0000
 sprite (u16)279 (u16)223 (u8:DECAL)cent (u8:flag)coin020 0x0000
 sprite (u16)334 (u16)209 (u8:DECAL)cent (u8:flag)coin021 0x0000
+sprite (u16)27 (u16)222 (u8:DECAL)pine (u8:flag)tree2 0x0000
+sprite (u16)27 (u16)252 (u8:DECAL)pine (u8:flag)tree2 0x0000
+sprite (u16)832 (u16)252 (u8:DECAL)pine (u8:flag)tree3 0x0000
+sprite (u16)451 (u16)200 (u8:DECAL)weed 0x00 0x0000
+sprite (u16)567 (u16)203 (u8:DECAL)weed2 0x00 0x0000
+sprite (u16)1220 (u16)100 (u8:DECAL)cent (u8:flag)coin010 0x0000
