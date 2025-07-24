@@ -111,7 +111,7 @@ struct modal *modal_new_gameover() {
   modal->input=_gameover_input;
   modal->update=_gameover_update;
   modal->render=_gameover_render;
-  egg_play_song(0/*RID_song_gameover*/,0,1);
+  egg_play_song(RID_song_meadowlark,0,1);
   
   /* Compose the report.
    * This should occupy at least 16x6 cells*, so it can cover the bit of the earth decal that we're using as a font.
