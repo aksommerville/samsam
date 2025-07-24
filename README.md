@@ -38,14 +38,3 @@ Um. It's not going to be all that engaging of a game.
 2025-07-23T19:29: Prices and layouts are now complete, or complete-ish.
 It's possible to complete in under 30 seconds, or under 60 seconds with a perfect score.
 
-## TODO
-
-- [x] Egg: Transformed decals are all messed up in web!
-- [x] Ghost should only sell each item once.
-- [x] Sound effects.
-- [x] Coins and proper shop pricing.
-- [x] I think I do need a visual map editor for fine-tuning the layouts. Is that feasible?
-- [x] It's possible to get trapped if you arrow-platform a tree but not the back side, then give away the bow. Design around it.
-- [x] Ensure that we are in fact using every decal. I'm not sure that was a requirement, but it ought to be.
-- [ ] Music: Make sideshow longer, and need something for gameover.
-- [ ] Itch page.
