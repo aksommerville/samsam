@@ -51,13 +51,13 @@ static void _gameover_update(struct modal *modal,double elapsed) {
   
   // Update (itemc) per (clock).
   if ((MODAL->itemc<3)&&(MODAL->clock>=ITEM_TIME_3)) {
-    egg_play_sound(RID_sound_uimotion);
+    samsam_sound(RID_sound_uimotion);
     MODAL->itemc=3;
   } else if ((MODAL->itemc<2)&&(MODAL->clock>=ITEM_TIME_2)) {
-    egg_play_sound(RID_sound_uimotion);
+    samsam_sound(RID_sound_uimotion);
     MODAL->itemc=2;
   } else if ((MODAL->itemc<1)&&(MODAL->clock>=ITEM_TIME_1)) {
-    egg_play_sound(RID_sound_uimotion);
+    samsam_sound(RID_sound_uimotion);
     MODAL->itemc=1;
   }
 }
@@ -68,12 +68,13 @@ static void _gameover_update(struct modal *modal,double elapsed) {
 static void _gameover_render(struct modal *modal) {
 
   // The infinite blackness of space. But more of an infinite dark gray, so the sprites' outlines show.
-  graf_draw_rect(&g.graf,0,0,FBW,FBH,0x302438ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x302438ff);
+  graf_set_input(&g.graf,g.texid);
   
   // Earth.
   {
     const struct decal *decal=decalv+NS_DECAL_earth;
-    graf_draw_decal(&g.graf,g.texid,(FBW>>1)-(decal->w>>1),EARTH_Y,decal->x,decal->y,decal->w,decal->h,0);
+    graf_decal(&g.graf,(FBW>>1)-(decal->w>>1),EARTH_Y,decal->x,decal->y,decal->w,decal->h);
   }
   
   // Burger.
@@ -85,11 +86,12 @@ static void _gameover_render(struct modal *modal) {
   const struct item *item=MODAL->itemv;
   int i=MODAL->itemc;
   for (;i-->0;item++) {
-    graf_draw_decal(&g.graf,g.texid,item->dstx,item->dsty,item->decal->x,item->decal->y,item->decal->w,item->decal->h,0);
+    graf_decal(&g.graf,item->dstx,item->dsty,item->decal->x,item->decal->y,item->decal->w,item->decal->h);
   }
   
   // Final report, sneakily positioned to occlude our font image, in the equatorial Pacific.
-  graf_draw_decal(&g.graf,MODAL->rptid,110,109,0,0,MODAL->rptw,MODAL->rpth,0);
+  graf_set_input(&g.graf,MODAL->rptid);
+  graf_decal(&g.graf,110,109,0,0,MODAL->rptw,MODAL->rpth);
 }
 
 /* Populate one of our item records.
@@ -111,7 +113,7 @@ struct modal *modal_new_gameover() {
   modal->input=_gameover_input;
   modal->update=_gameover_update;
   modal->render=_gameover_render;
-  egg_play_song(RID_song_meadowlark,0,1);
+  samsam_song(RID_song_meadowlark);
   
   /* Compose the report.
    * This should occupy at least 16x6 cells*, so it can cover the bit of the earth decal that we're using as a font.
@@ -164,7 +166,7 @@ struct modal *modal_new_gameover() {
   #undef APPEND_LITERAL
   #undef APPEND_DECIMAL
   MODAL->rptid=generate_label(rpt,rptc);
-  egg_texture_get_status(&MODAL->rptw,&MODAL->rpth,MODAL->rptid);
+  egg_texture_get_size(&MODAL->rptw,&MODAL->rpth,MODAL->rptid);
   
   /* Fill (itemv) with the three items we delivered, and position them below where Earth will go.
    */

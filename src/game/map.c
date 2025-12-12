@@ -8,14 +8,14 @@
 int res_get(void *dstpp,int tid,int rid) {
   struct rom_reader reader;
   if (rom_reader_init(&reader,g.rom,g.romc)<0) return 0;
-  struct rom_res *res;
-  while (res=rom_reader_next(&reader)) {
-    if (res->tid>tid) return 0;
-    if (res->tid<tid) continue;
-    if (res->rid>rid) return 0;
-    if (res->rid<rid) continue;
-    *(const void**)dstpp=res->v;
-    return res->c;
+  struct rom_entry res;
+  while (rom_reader_next(&res,&reader)>0) {
+    if (res.tid>tid) return 0;
+    if (res.tid<tid) continue;
+    if (res.rid>rid) return 0;
+    if (res.rid<rid) continue;
+    *(const void**)dstpp=res.v;
+    return res.c;
   }
   return 0;
 }
@@ -38,11 +38,11 @@ int load_map(int rid) {
    */
   const void *serial=0;
   int serialc=res_get(&serial,EGG_TID_map,rid);
-  struct rom_map rmap;
-  if (rom_map_decode(&rmap,serial,serialc)<0) return -1;
-  struct rom_command_reader reader={.v=rmap.cmdv,.c=rmap.cmdc};
-  struct rom_command cmd;
-  while (rom_command_reader_next(&cmd,&reader)>0) {
+  struct map_res rmap;
+  if (map_res_decode(&rmap,serial,serialc)<0) return -1;
+  struct cmdlist_reader reader={.v=rmap.cmd,.c=rmap.cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
     
       case CMD_map_indoors: {
@@ -50,12 +50,12 @@ int load_map(int rid) {
         } break;
     
       case CMD_map_width: {
-          g.worldw=(cmd.argv[0]<<8)|cmd.argv[1];
+          g.worldw=(cmd.arg[0]<<8)|cmd.arg[1];
         } break;
       
       case CMD_map_hero: {
-          g.man.x=(cmd.argv[0]<<8)|cmd.argv[1];
-          g.man.y=((cmd.argv[2]<<8)|cmd.argv[3])-(decalv[NS_DECAL_man].h>>1);
+          g.man.x=(cmd.arg[0]<<8)|cmd.arg[1];
+          g.man.y=((cmd.arg[2]<<8)|cmd.arg[3])-(decalv[NS_DECAL_man].h>>1);
         } break;
       
       case CMD_map_platform: {
@@ -65,10 +65,10 @@ int load_map(int rid) {
           }
           struct platform *platform=g.platformv+g.platformc++;
           memset(platform,0,sizeof(struct platform));
-          platform->x=(cmd.argv[0]<<8)|cmd.argv[1];
-          platform->y=(cmd.argv[2]<<8)|cmd.argv[3];
-          platform->w=(cmd.argv[4]<<8)|cmd.argv[5];
-          platform->style=cmd.argv[6];
+          platform->x=(cmd.arg[0]<<8)|cmd.arg[1];
+          platform->y=(cmd.arg[2]<<8)|cmd.arg[3];
+          platform->w=(cmd.arg[4]<<8)|cmd.arg[5];
+          platform->style=cmd.arg[6];
         } break;
         
       case CMD_map_sprite: {
@@ -76,18 +76,18 @@ int load_map(int rid) {
             fprintf(stderr,"map:%d: Too many sprites!\n",rid);
             return -1;
           }
-          if (cmd.argv[4]>=DECAL_COUNT) {
-            fprintf(stderr,"map:%d: Invalid decal id %d\n",rid,cmd.argv[4]);
+          if (cmd.arg[4]>=DECAL_COUNT) {
+            fprintf(stderr,"map:%d: Invalid decal id %d\n",rid,cmd.arg[4]);
             return -1;
           }
-          const struct decal *decal=decalv+cmd.argv[4];
+          const struct decal *decal=decalv+cmd.arg[4];
           struct sprite *sprite=g.spritev+g.spritec++;
           memset(sprite,0,sizeof(struct sprite));
-          sprite->x=(cmd.argv[0]<<8)|cmd.argv[1];
-          sprite->y=((cmd.argv[2]<<8)|cmd.argv[3])-(decal->h>>1);
+          sprite->x=(cmd.arg[0]<<8)|cmd.arg[1];
+          sprite->y=((cmd.arg[2]<<8)|cmd.arg[3])-(decal->h>>1);
           sprite->decal=decal;
-          if (sprite_init_per_map(sprite,cmd.argv[5],cmd.argv[6],cmd.argv[7])<0) {
-            fprintf(stderr,"map:%d: Init sprite with decal %d failed.\n",rid,cmd.argv[4]);
+          if (sprite_init_per_map(sprite,cmd.arg[5],cmd.arg[6],cmd.arg[7])<0) {
+            fprintf(stderr,"map:%d: Init sprite with decal %d failed.\n",rid,cmd.arg[4]);
             return -1;
           }
         } break;
@@ -111,6 +111,6 @@ int reset_session() {
   memset(g.soldv,0,sizeof(g.soldv));
   memset(g.item_by_day,0,sizeof(g.item_by_day));
   sky_reset(&g.sky);
-  egg_play_song(RID_song_sideshow,0,1);
+  samsam_song(RID_song_sideshow);
   return load_map(RID_map_home);
 }

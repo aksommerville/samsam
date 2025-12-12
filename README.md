@@ -1,6 +1,6 @@
 # Sam-Sam
 
-Requires [Egg](https://github.com/aksommerville/egg) to build.
+Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 Same Same Game Jam, 21 July 2025.
 The idea is all the devs have to use the same set of provided graphics.
@@ -38,3 +38,4 @@ Um. It's not going to be all that engaging of a game.
 2025-07-23T19:29: Prices and layouts are now complete, or complete-ish.
 It's possible to complete in under 30 seconds, or under 60 seconds with a perfect score.
 
+2025-12-12: Migrated from Egg v1 to Egg v2. Songs and sounds were not revoiced, so they're all a bit dull now.

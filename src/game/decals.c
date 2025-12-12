@@ -1,5 +1,5 @@
 #include "shared_symbols.h"
-#include "egg_rom_toc.h"
+#include "egg_res_toc.h"
 
 const struct decal decalv[DECAL_COUNT]={
                        //   x   y   w  h flop dx dy pc

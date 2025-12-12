@@ -33,18 +33,18 @@ static void ghost_activate(struct modal *modal) {
   if ((MODAL->merchp<0)||(MODAL->merchp>=MODAL->merchc)) return;
   const struct merch *merch=MODAL->merchv+MODAL->merchp;
   if (merch->sold) {
-    egg_play_sound(RID_sound_reject);
+    samsam_sound(RID_sound_reject);
   } else if (merch->decal->price>g.coinc) {
-    egg_play_sound(RID_sound_reject);
+    samsam_sound(RID_sound_reject);
   } else if (merch->decal->price>0) {
-    egg_play_sound(RID_sound_purchase);
+    samsam_sound(RID_sound_purchase);
     g.coinc-=merch->decal->price;
     g.man.larm=MAN_ARM_SIDE;
     g.man.carry_item=merch->decal-decalv;
     g.soldv[merch->decal-decalv]=1;
     modal->defunct=1;
   } else {
-    egg_play_sound(RID_sound_uiaction);
+    samsam_sound(RID_sound_uiaction);
     modal->defunct=1;
   }
 }
@@ -61,7 +61,7 @@ static void ghost_move(struct modal *modal,int dx,int dy) {
   int np=row*MERCH_COLC+col;
   if (np>=MODAL->merchc) np=MODAL->merchc-1;
   MODAL->merchp=np;
-  egg_play_sound(RID_sound_uimotion);
+  samsam_sound(RID_sound_uimotion);
 }
 
 /* Input.
@@ -89,26 +89,29 @@ static void _ghost_update(struct modal *modal,double elapsed) {
  
 static void _ghost_render(struct modal *modal) {
 
-  graf_draw_rect(&g.graf,0,0,FBW,FBH,0x6d79a7ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x6d79a7ff);
 
   const struct decal *bpk=decalv+NS_DECAL_backpack;
-  graf_draw_decal(&g.graf,g.texid,(FBW>>1)-(bpk->w>>1),TOP_MARGIN,bpk->x,bpk->y,bpk->w,bpk->h,0);
+  graf_set_input(&g.graf,g.texid);
+  graf_decal(&g.graf,(FBW>>1)-(bpk->w>>1),TOP_MARGIN,bpk->x,bpk->y,bpk->w,bpk->h);
   const struct decal *coin=decalv+NS_DECAL_cent;
-  graf_draw_decal(&g.graf,g.texid,300,20,coin->x,coin->y,coin->w,coin->h,0);
-  graf_draw_decal(&g.graf,MODAL->coinq_texid,310,20,0,0,MODAL->coinq_w,MODAL->coinq_h,0);
+  graf_decal(&g.graf,300,20,coin->x,coin->y,coin->w,coin->h);
+  graf_set_input(&g.graf,MODAL->coinq_texid);
+  graf_decal(&g.graf,310,20,0,0,MODAL->coinq_w,MODAL->coinq_h);
 
+  graf_set_input(&g.graf,g.texid);
   const struct merch *merch=MODAL->merchv;
   int i=MODAL->merchc;
   for (;i-->0;merch++) {
     if (merch->sold) graf_set_alpha(&g.graf,0x40);
-    graf_draw_decal(&g.graf,g.texid,merch->dstx,merch->dsty,merch->decal->x,merch->decal->y,merch->decal->w,merch->decal->h,0);
+    graf_decal(&g.graf,merch->dstx,merch->dsty,merch->decal->x,merch->decal->y,merch->decal->w,merch->decal->h);
     if (merch->decal->price>0) {
       int dsty=merch->dsty+merch->decal->h+2;
       int coinsw=merch->decal->price*coin->w;
       int dstx=merch->dstx+(merch->decal->w>>1)-(coinsw>>1);
       int ii=merch->decal->price;
       for (;ii-->0;dstx+=coin->w) {
-        graf_draw_decal(&g.graf,g.texid,dstx,dsty,coin->x,coin->y,coin->w,coin->h,0);
+        graf_decal(&g.graf,dstx,dsty,coin->x,coin->y,coin->w,coin->h);
       }
     }
     if (merch->sold) graf_set_alpha(&g.graf,0xff);
@@ -117,8 +120,8 @@ static void _ghost_render(struct modal *modal) {
     merch=MODAL->merchv+MODAL->merchp;
     const int margin=2;
     const struct decal *arrow=decalv+NS_DECAL_arrow; // Natural orientation is down.
-    graf_draw_decal(&g.graf,g.texid,merch->dstx-margin-arrow->h,merch->dsty+(merch->decal->h>>1)-(arrow->w>>1),arrow->x,arrow->y,arrow->w,arrow->h,EGG_XFORM_SWAP);
-    graf_draw_decal(&g.graf,g.texid,merch->dstx+merch->decal->w+margin,merch->dsty+(merch->decal->h>>1)-(arrow->w>>1),arrow->x,arrow->y,arrow->w,arrow->h,EGG_XFORM_SWAP|EGG_XFORM_YREV);
+    graf_decal_xform(&g.graf,merch->dstx-margin-arrow->h,merch->dsty+(merch->decal->h>>1)-(arrow->w>>1),arrow->x,arrow->y,arrow->w,arrow->h,EGG_XFORM_SWAP);
+    graf_decal_xform(&g.graf,merch->dstx+merch->decal->w+margin,merch->dsty+(merch->decal->h>>1)-(arrow->w>>1),arrow->x,arrow->y,arrow->w,arrow->h,EGG_XFORM_SWAP|EGG_XFORM_YREV);
   }
 }
 
@@ -139,7 +142,7 @@ struct modal *modal_new_ghost() {
   if (g.coinc>=10) coinq[coinqc++]='0'+(g.coinc/10)%10;
   coinq[coinqc++]='0'+g.coinc%10;
   MODAL->coinq_texid=generate_label(coinq,coinqc);
-  egg_texture_get_status(&MODAL->coinq_w,&MODAL->coinq_h,MODAL->coinq_texid);
+  egg_texture_get_size(&MODAL->coinq_w,&MODAL->coinq_h,MODAL->coinq_texid);
   
   // Populate the merch.
   int top=TOP_MARGIN+decalv[NS_DECAL_backpack].h;

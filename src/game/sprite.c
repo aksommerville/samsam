@@ -17,7 +17,8 @@ void sprite_render(struct sprite *sprite) {
     }
     int x=(int)sprite->x-(w>>1)-g.scrollx;
     int y=(int)sprite->y-(h>>1);
-    graf_draw_decal(&g.graf,g.texid,x,y,sprite->decal->x,sprite->decal->y,sprite->decal->w,sprite->decal->h,sprite->xform);
+    graf_set_input(&g.graf,g.texid);
+    graf_decal_xform(&g.graf,x,y,sprite->decal->x,sprite->decal->y,sprite->decal->w,sprite->decal->h,sprite->xform);
   }
 }
 
@@ -219,16 +220,17 @@ static void sprite_burger_render(struct sprite *sprite) {
     fdy=10;
     ndy=10;
   }
-  graf_draw_decal(&g.graf,g.texid,midx+fdx-(d_wing->w>>1),midy+fdy-4-(d_wing->h>>1),d_wing->x,d_wing->y,d_wing->w,d_wing->h,fxform);
-  graf_draw_decal(&g.graf,g.texid,midx-(d_burger->w>>1),midy-(d_burger->h>>1),d_burger->x,d_burger->y,d_burger->w,d_burger->h,bxform);
+  graf_set_input(&g.graf,g.texid);
+  graf_decal_xform(&g.graf,midx+fdx-(d_wing->w>>1),midy+fdy-4-(d_wing->h>>1),d_wing->x,d_wing->y,d_wing->w,d_wing->h,fxform);
+  graf_decal_xform(&g.graf,midx-(d_burger->w>>1),midy-(d_burger->h>>1),d_burger->x,d_burger->y,d_burger->w,d_burger->h,bxform);
   if (flag_get(NS_flag_burgerking)) {
     const struct decal *crown=decalv+NS_DECAL_crown;
-    graf_draw_decal(&g.graf,g.texid,midx-(crown->w>>1),midy-crown->h-3,crown->x,crown->y,crown->w,crown->h,0);
+    graf_decal(&g.graf,midx-(crown->w>>1),midy-crown->h-3,crown->x,crown->y,crown->w,crown->h);
   }
-  graf_draw_decal(&g.graf,g.texid,midx+ndx-(d_wing->w>>1),midy+ndy-4-(d_wing->h>>1),d_wing->x,d_wing->y,d_wing->w,d_wing->h,nxform);
+  graf_decal_xform(&g.graf,midx+ndx-(d_wing->w>>1),midy+ndy-4-(d_wing->h>>1),d_wing->x,d_wing->y,d_wing->w,d_wing->h,nxform);
   if (sprite->iv[1]) { // appeased; add a heart
     const struct decal *h=decalv+NS_DECAL_heart;
-    graf_draw_decal(&g.graf,g.texid,midx-(h->w>>1),midy-h->h-8,h->x,h->y,h->w,h->h,0);
+    graf_decal(&g.graf,midx-(h->w>>1),midy-h->h-8,h->x,h->y,h->w,h->h);
   }
 }
 
@@ -270,7 +272,7 @@ static void sprite_burger_update(struct sprite *sprite,double elapsed) {
     double dx=sprite->x-dstx;
     double dy=sprite->y-dsty;
     if ((dx>-2.0)&&(dx<2.0)&&(dy>-2.0)&&(dy<2.0)&&g.man.carry_item) {
-      egg_play_sound(RID_sound_offering);
+      samsam_sound(RID_sound_offering);
       switch (g.man.carry_item) {
         case NS_DECAL_crown: flag_set(NS_flag_burgerking,1); break;
       }
@@ -352,7 +354,7 @@ static void sprite_coin_update(struct sprite *sprite,double elapsed) {
   if ((dy<-8.0)||(dy>8.0)) return;
   if (g.coinc>=999) return;
   g.coinc++;
-  egg_play_sound(RID_sound_coin);
+  samsam_sound(RID_sound_coin);
   flag_set(sprite->iv[0],1);
   sprite->defunct=1;
 }

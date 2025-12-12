@@ -32,5 +32,5 @@ void modal_update(struct modal *modal,double elapsed) {
 
 void modal_render(struct modal *modal) {
   if (modal&&modal->render) modal->render(modal);
-  else graf_draw_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
+  else graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
 }

@@ -20,7 +20,7 @@ void man_update(struct man *man,double elapsed) {
     if (man->dribble>=1.0) {
       man->dribble=0.0;
     } else if ((man->dribble>=0.5)&&(pv<0.5)) {
-      egg_play_sound(RID_sound_basketball);
+      samsam_sound(RID_sound_basketball);
     }
   }
 
@@ -116,12 +116,12 @@ void man_jump(struct man *man) {
   if (man->jumping) return;
   if (!man->seated) return; // TODO Early jump forgiveness? Start a clock and trigger it when we hit the ground. Also some coyote time.
   if ((g.pvinput&EGG_BTN_DOWN)&&man->platform) {
-    egg_play_sound(RID_sound_downjump);
+    samsam_sound(RID_sound_downjump);
     man->y+=2.0;
     man->seated=0;
     man->platform=0;
   } else {
-    egg_play_sound(RID_sound_jump);
+    samsam_sound(RID_sound_jump);
     man->jumping=1;
     man->jumppower=MAN_JUMP_POWER_INITIAL;
   }
@@ -137,7 +137,7 @@ void man_unjump(struct man *man) {
  
 static void man_begin_mattock(struct man *man) {
   man->action=NS_DECAL_mattock;
-  egg_play_sound(RID_sound_swipe);
+  samsam_sound(RID_sound_swipe);
   //TODO break rocks
 }
 
@@ -147,7 +147,7 @@ static void man_begin_mattock(struct man *man) {
 static void man_begin_bomb(struct man *man) {
   man->carry_item=0;
   man->larm=man->rarm=MAN_ARM_DOWN;
-  egg_play_sound(RID_sound_explode);
+  samsam_sound(RID_sound_explode);
   //TODO break rocks
 }
 
@@ -179,12 +179,12 @@ static void man_begin_ax(struct man *man) {
   
   // Did we chop something?
   if (y>0.0) {
-    egg_play_sound(RID_sound_choptree);
+    samsam_sound(RID_sound_choptree);
     sprite_new_log(treex,y+(decalv[NS_DECAL_pine].h>>1));
   
   // Swing and a miss.
   } else {
-    egg_play_sound(RID_sound_swipe);
+    samsam_sound(RID_sound_swipe);
   }
 }
 
@@ -193,7 +193,7 @@ static void man_begin_ax(struct man *man) {
  
 static void man_begin_sword(struct man *man) {
   man->action=NS_DECAL_sword;
-  egg_play_sound(RID_sound_swipe);
+  samsam_sound(RID_sound_swipe);
   //TODO deal damage
 }
 
@@ -206,7 +206,7 @@ static void man_begin_shotgun(struct man *man) {
   if (man->larm) x-=17.0; else x+=17.0;
   struct sprite *bullet=sprite_new_bullet(x,y,man->larm?-1.0:1.0);
   if (!bullet) return;
-  egg_play_sound(RID_sound_shotgun);
+  samsam_sound(RID_sound_shotgun);
 }
 
 /* Bow: Fire a projectile that turns into a platform.
@@ -218,14 +218,14 @@ static void man_begin_bow(struct man *man) {
   if (man->larm) x-=10.0; else x+=10.0;
   struct sprite *arrow=sprite_new_arrow(x,y,man->larm?-1.0:1.0);
   if (!arrow) return;
-  egg_play_sound(RID_sound_bow);
+  samsam_sound(RID_sound_bow);
 }
 
 /* Hourglass: Freeze time.
  */
  
 static void man_begin_hourglass(struct man *man) {
-  egg_play_sound(RID_sound_hourglass);
+  samsam_sound(RID_sound_hourglass);
   man->action=NS_DECAL_hourglass;
   //TODO freeze time
 }
@@ -260,7 +260,7 @@ void man_action(struct man *man) {
     case NS_DECAL_hourglass: man_begin_hourglass(man); break;
     case NS_DECAL_magnifier: man_begin_magnifier(man); break;
     case NS_DECAL_basketball: man_begin_basketball(man); break;
-    default: egg_play_sound(RID_sound_reject); break; // Important to do something, so the player knows she's pressing a live button.
+    default: samsam_sound(RID_sound_reject); break; // Important to do something, so the player knows she's pressing a live button.
   }
 }
 
@@ -288,23 +288,24 @@ void man_render(struct man *man) {
   int dsty=(int)(man->y)-(decal->h>>1);
   
   // Legs first. We don't slice them exactly; just take half of the decal's width.
-  graf_draw_decal(&g.graf,g.texid,dstx,dsty+trunkh-(int)(man->lleg*legh),decal->x,decal->y+trunkh,decal->w>>1,legh,0);
-  graf_draw_decal(&g.graf,g.texid,dstx+(decal->w>>1),dsty+trunkh-(int)(man->rleg*legh),decal->x+(decal->w>>1),decal->y+trunkh,decal->w>>1,legh,0);
+  graf_set_input(&g.graf,g.texid);
+  graf_decal(&g.graf,dstx,dsty+trunkh-(int)(man->lleg*legh),decal->x,decal->y+trunkh,decal->w>>1,legh);
+  graf_decal(&g.graf,dstx+(decal->w>>1),dsty+trunkh-(int)(man->rleg*legh),decal->x+(decal->w>>1),decal->y+trunkh,decal->w>>1,legh);
   
   // Arms.
   switch (man->larm) {
-    case MAN_ARM_DOWN: graf_draw_decal(&g.graf,g.texid,dstx,dsty+shouldery,decal->x,decal->y+shouldery,armw,armh,0); break;
-    case MAN_ARM_SIDE: graf_draw_decal(&g.graf,g.texid,dstx+armw-armh+4,dsty+shouldery,decal->x,decal->y+shouldery,armw+1,armh,EGG_XFORM_SWAP|EGG_XFORM_YREV); break;
-    case MAN_ARM_UP:   graf_draw_decal(&g.graf,g.texid,dstx,dsty+shouldery-armh+5,decal->x,decal->y+shouldery,armw+1,armh,EGG_XFORM_YREV); break;
+    case MAN_ARM_DOWN: graf_decal_xform(&g.graf,dstx,dsty+shouldery,decal->x,decal->y+shouldery,armw,armh,0); break;
+    case MAN_ARM_SIDE: graf_decal_xform(&g.graf,dstx+armw-armh+4,dsty+shouldery,decal->x,decal->y+shouldery,armw+1,armh,EGG_XFORM_SWAP|EGG_XFORM_YREV); break;
+    case MAN_ARM_UP:   graf_decal_xform(&g.graf,dstx,dsty+shouldery-armh+5,decal->x,decal->y+shouldery,armw+1,armh,EGG_XFORM_YREV); break;
   }
   switch (man->rarm) {
-    case MAN_ARM_DOWN: graf_draw_decal(&g.graf,g.texid,dstx+decal->w-armw,dsty+shouldery,decal->x+decal->w-armw,decal->y+shouldery,armw,armh,0); break;
-    case MAN_ARM_SIDE: graf_draw_decal(&g.graf,g.texid,dstx+decal->w-armw-4,dsty+shouldery,decal->x,decal->y+shouldery,armw+1,armh,EGG_XFORM_SWAP); break;
-    case MAN_ARM_UP:   graf_draw_decal(&g.graf,g.texid,dstx+decal->w-armw-1,dsty+shouldery-armh+5,decal->x+decal->w-armw-1,decal->y+shouldery,armw+1,armh,EGG_XFORM_YREV); break;
+    case MAN_ARM_DOWN: graf_decal_xform(&g.graf,dstx+decal->w-armw,dsty+shouldery,decal->x+decal->w-armw,decal->y+shouldery,armw,armh,0); break;
+    case MAN_ARM_SIDE: graf_decal_xform(&g.graf,dstx+decal->w-armw-4,dsty+shouldery,decal->x,decal->y+shouldery,armw+1,armh,EGG_XFORM_SWAP); break;
+    case MAN_ARM_UP:   graf_decal_xform(&g.graf,dstx+decal->w-armw-1,dsty+shouldery-armh+5,decal->x+decal->w-armw-1,decal->y+shouldery,armw+1,armh,EGG_XFORM_YREV); break;
   }
   
   // Trunk.
-  graf_draw_decal(&g.graf,g.texid,dstx+armw,dsty,decal->x+armw,decal->y,decal->w-(armw<<1),trunkh,0);
+  graf_decal(&g.graf,dstx+armw,dsty,decal->x+armw,decal->y,decal->w-(armw<<1),trunkh);
   
   // Are we carring something?
   if ((man->carry_item>0)&&(man->carry_item<DECAL_COUNT)) {
@@ -356,7 +357,7 @@ void man_render(struct man *man) {
         if (man->dribble>=0.5) dy+=(int)((1.0-man->dribble)*travelh*2.0);
         else dy+=(int)(man->dribble*travelh*2.0);
       }
-      graf_draw_decal(&g.graf,g.texid,ix-(idecal->w>>1)+dx,iy-(idecal->h>>1)+dy,idecal->x,idecal->y,idecal->w,idecal->h,xform);
+      graf_decal_xform(&g.graf,ix-(idecal->w>>1)+dx,iy-(idecal->h>>1)+dy,idecal->x,idecal->y,idecal->w,idecal->h,xform);
     }
   }
 }

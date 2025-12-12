@@ -8,14 +8,15 @@ static void platform_render_bar(struct platform *platform) {
   const struct decal *dfill=decalv+NS_DECAL_platform;
   int x=platform->x-g.scrollx;
   int xz=x+platform->w-dedge->w; // column where the fill ends.
-  graf_draw_decal(&g.graf,g.texid,x,platform->y,dedge->x,dedge->y,dedge->w,dedge->h,0);
+  graf_set_input(&g.graf,g.texid);
+  graf_decal(&g.graf,x,platform->y,dedge->x,dedge->y,dedge->w,dedge->h);
   x+=dedge->w;
   while (x+dfill->w<=xz) {
-    graf_draw_decal(&g.graf,g.texid,x,platform->y,dfill->x,dfill->y,dfill->w,dfill->h,0);
+    graf_decal(&g.graf,x,platform->y,dfill->x,dfill->y,dfill->w,dfill->h);
     x+=dfill->w;
   }
-  graf_draw_decal(&g.graf,g.texid,x,platform->y,dfill->x,dfill->y,xz-x,dfill->h,0);
-  graf_draw_decal(&g.graf,g.texid,xz,platform->y,dedge->x,dedge->y,dedge->w,dedge->h,EGG_XFORM_XREV);
+  graf_decal(&g.graf,x,platform->y,dfill->x,dfill->y,xz-x,dfill->h);
+  graf_decal_xform(&g.graf,xz,platform->y,dedge->x,dedge->y,dedge->w,dedge->h,EGG_XFORM_XREV);
 }
 
 /* Render simpler single-decal platforms.
@@ -24,7 +25,8 @@ static void platform_render_bar(struct platform *platform) {
 static void platform_render_decal(struct platform *platform,const struct decal *decal,int dx,int dy) {
   int dstx=platform->x-g.scrollx+dx;
   int dsty=platform->y+dy;
-  graf_draw_decal(&g.graf,g.texid,dstx,dsty,decal->x,decal->y,decal->w,decal->h,platform->xform);
+  graf_set_input(&g.graf,g.texid);
+  graf_decal_xform(&g.graf,dstx,dsty,decal->x,decal->y,decal->w,decal->h,platform->xform);
 }
 
 /* Render, dispatch.

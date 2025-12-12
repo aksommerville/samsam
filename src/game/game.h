@@ -8,10 +8,10 @@
 #define SPRITE_LIMIT 64
 
 #include "egg/egg.h"
-#include "opt/stdlib/egg-stdlib.h"
-#include "opt/graf/graf.h"
-#include "opt/rom/rom.h"
-#include "egg_rom_toc.h"
+#include "util/stdlib/egg-stdlib.h"
+#include "util/graf/graf.h"
+#include "util/res/res.h"
+#include "egg_res_toc.h"
 #include "shared_symbols.h"
 #include "man.h"
 #include "platform.h"
@@ -48,6 +48,7 @@ extern struct g {
   int hi_score;
   double hi_time; // "lo" time if you want to be pedantic about it.
   int new_hi_score; // Nonzero before gameover if the new score is strictly greater than the old. (score only, time doesn't count)
+  int song_playing;
 } g;
 
 /* Labels are strictly monospaced. Pad with spaces if you like.
@@ -81,5 +82,8 @@ void begin_modal_ghost();
  */
 void hiscore_load();
 void hiscore_save();
+
+void samsam_song(int rid);
+void samsam_sound(int rid);
 
 #endif

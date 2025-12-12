@@ -13,15 +13,13 @@ int generate_label(const char *src,int srcc) {
   const int xspacing=colw+1;
   const int yspacing=rowh+1;
   
-  // Determine output dimensions and glyph count.
+  // Determine output dimensions.
   int rowc=0,colc=1,srcp=0,vtxc=0;
   while (srcp<srcc) {
     const char *line=src+srcp;
     int linec=0;
     while ((srcp<srcc)&&(src[srcp++]!=0x0a)) linec++;
     if (linec>colc) colc=linec;
-    // We're not going to draw 0x20 or 0x7f, or anything outside G0.
-    for (;linec-->0;line++) if ((*line>0x20)&&(*line<0x7f)) vtxc++;
     rowc++;
   }
   if (!rowc) rowc=1;
@@ -30,18 +28,21 @@ int generate_label(const char *src,int srcc) {
   
   // Make the destination texture and fill it with the background color.
   // Then if there's no glyphs, we're done.
+  graf_flush(&g.graf);
+  graf_reset(&g.graf);
   int texid=egg_texture_new();
   egg_texture_load_raw(texid,fullw,fullh,fullw<<2,0,0);
-  egg_draw_clear(texid,BGCOLOR);
-  if (!vtxc) return texid;
+  graf_set_output(&g.graf,texid);
+  graf_fill_rect(&g.graf,0,0,fullw,fullh,BGCOLOR);
+  graf_set_input(&g.graf,g.texid);
   
-  // Prepare a vertex buffer.
-  struct egg_draw_decal *vtxv=malloc(sizeof(struct egg_draw_decal)*vtxc);
-  if (!vtxv) return texid;
-  struct egg_draw_decal *vtx=vtxv;
-  int vtxp=0;
-  
-  // Walk the string again, populating (vtxv).
+  /* Walk the string again, drawing decals.
+   * This means a full round-trip for each glyph, very inefficient.
+   * In Egg v1 it wasn't so bad; we could batch decals at least up to the platform layer.
+   * A smarter approach, if we wanted to do this right, would be render the whole label client-side then upload it.
+   * (eg what the "font" unit does).
+   * But I don't want to do it right, who cares.
+   */
   int x=1,y=1;
   for (;srcc-->0;src++) {
     if (*src==0x0a) {
@@ -52,22 +53,13 @@ int generate_label(const char *src,int srcc) {
     if ((*src>0x20)&&(*src<0x7f)) {
       int srccol=(*src)&15;
       int srcrow=((*src)>>4)-2;
-      vtx->dstx=x;
-      vtx->dsty=y;
-      vtx->srcx=srcx+srccol*colw;
-      vtx->srcy=srcy+srcrow*rowh;
-      vtx->w=colw;
-      vtx->h=rowh;
-      vtx->xform=0;
-      vtx++;
-      if (++vtxp>=vtxc) break; // safety escape, in case i miscalculated above
+      graf_decal(&g.graf,x,y,srcx+srccol*colw,srcy+srcrow*rowh,colw,rowh);
     }
     x+=xspacing;
   }
   
-  // Draw it, free the vertex buffer, and we're done.
-  egg_draw_decal(texid,g.texid,vtxv,vtxc);
-  free(vtxv);
+  graf_flush(&g.graf);
+  graf_reset(&g.graf);
   return texid;
 }
 
@@ -82,7 +74,8 @@ void quickie_render_string(int dstx,int dsty,const char *src,int srcc) {
   const int colw=3,rowh=5;
   int boxw=srcc*colw+srcc+1;
   int boxh=rowh+2;
-  graf_draw_rect(&g.graf,dstx,dsty,boxw,boxh,BGCOLOR);
+  graf_fill_rect(&g.graf,dstx,dsty,boxw,boxh,BGCOLOR);
+  graf_set_input(&g.graf,g.texid);
   dstx+=1;
   dsty+=1;
   for (;srcc-->0;src++,dstx+=colw+1) {
@@ -94,7 +87,7 @@ void quickie_render_string(int dstx,int dsty,const char *src,int srcc) {
     int row=ch>>4;
     int x=srcx+col*colw;
     int y=srcy+row*rowh;
-    graf_draw_decal(&g.graf,g.texid,dstx,dsty,x,y,colw,rowh,0);
+    graf_decal(&g.graf,dstx,dsty,x,y,colw,rowh);
   }
 }
 

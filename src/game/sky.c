@@ -70,12 +70,13 @@ void sky_render(struct sky *sky) {
 
   uint32_t bgcolor=sky->color;
   if (sky->sunlevel<1.0) bgcolor=mix_color(SKY_COLOR_NEUTRAL,sky->color,sky->sunlevel);
-  graf_draw_rect(&g.graf,0,0,FBW,FBH,bgcolor);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,bgcolor);
   
   int dstx=(FBW>>1)-(sky->sundecal->w>>1);
   int dsty=SUN_POSITION;
   if (sky->sunlevel<1.0) {
     dsty=FBH-(int)(sky->sunlevel*(FBH-SUN_POSITION));
   }
-  graf_draw_decal(&g.graf,g.texid,dstx,dsty,sky->sundecal->x,sky->sundecal->y,sky->sundecal->w,sky->sundecal->h,0);
+  graf_set_input(&g.graf,g.texid);
+  graf_decal(&g.graf,dstx,dsty,sky->sundecal->x,sky->sundecal->y,sky->sundecal->w,sky->sundecal->h);
 }

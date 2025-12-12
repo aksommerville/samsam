@@ -5,18 +5,21 @@ struct g g={0};
 void egg_client_quit(int status) {
 }
 
+void egg_client_notify(int k,int v) {
+}
+
 /* Init.
  */
 
 int egg_client_init() {
 
   int fbw=0,fbh=0;  
-  egg_texture_get_status(&fbw,&fbh,1);
+  egg_texture_get_size(&fbw,&fbh,1);
   if ((fbw!=FBW)||(fbh!=FBH)) return -1;
   
-  if ((g.romc=egg_get_rom(0,0))<=0) return -1;
+  if ((g.romc=egg_rom_get(0,0))<=0) return -1;
   if (!(g.rom=malloc(g.romc))) return -1;
-  if (egg_get_rom(g.rom,g.romc)!=g.romc) return -1;
+  if (egg_rom_get(g.rom,g.romc)!=g.romc) return -1;
   
   srand_auto();
   egg_texture_load_image(g.texid=egg_texture_new(),RID_image_graphics);
@@ -157,17 +160,18 @@ static void render_game() {
   
   // Draw the sky, and if indoors, the brick border.
   if (g.indoors) {
-    graf_draw_rect(&g.graf,0,0,FBW,FBH,0xd0c094ff);
+    graf_fill_rect(&g.graf,0,0,FBW,FBH,0xd0c094ff);
+    graf_set_input(&g.graf,g.texid);
     const struct decal *decal=decalv+NS_DECAL_dollar;
     int x=0;
     for (;x<FBW;x+=decal->w) {
-      graf_draw_decal(&g.graf,g.texid,x,0,decal->x,decal->y,decal->w,decal->h,0);
-      graf_draw_decal(&g.graf,g.texid,x,FBH-decal->h,decal->x,decal->y,decal->w,decal->h,0);
+      graf_decal(&g.graf,x,0,decal->x,decal->y,decal->w,decal->h);
+      graf_decal(&g.graf,x,FBH-decal->h,decal->x,decal->y,decal->w,decal->h);
     }
     int y=0;
     for (;y<FBH;y+=decal->h) {
-      graf_draw_decal(&g.graf,g.texid,0,y,decal->x,decal->y,decal->w,decal->h,0);
-      graf_draw_decal(&g.graf,g.texid,FBW-decal->w,y,decal->x,decal->y,decal->w,decal->h,0);
+      graf_decal(&g.graf,0,y,decal->x,decal->y,decal->w,decal->h);
+      graf_decal(&g.graf,FBW-decal->w,y,decal->x,decal->y,decal->w,decal->h);
     }
   } else {
     sky_render(&g.sky);
@@ -197,7 +201,8 @@ static void render_game() {
   // Stats. Maybe just the coin count?
   {
     const struct decal *decal=decalv+NS_DECAL_cent;
-    graf_draw_decal(&g.graf,g.texid,2,2,decal->x,decal->y,decal->w,decal->h,0);
+    graf_set_input(&g.graf,g.texid);
+    graf_decal(&g.graf,2,2,decal->x,decal->y,decal->w,decal->h);
     char str[3];
     int strc=0;
     if (g.coinc>=100) str[strc++]='0'+(g.coinc/100)%10;
@@ -298,4 +303,17 @@ void hiscore_save() {
   text[3]=',';
   time_repr(text+4,9,g.hi_time);
   egg_store_set("hiscore",7,text,sizeof(text));
+}
+
+/* Audio.
+ */
+ 
+void samsam_song(int rid) {
+  if (rid==g.song_playing) return;
+  g.song_playing=rid;
+  egg_play_song(1,rid,1,0.5f,0.0f);
+}
+
+void samsam_sound(int rid) {
+  egg_play_sound(rid,1.0f,0.0f);
 }
